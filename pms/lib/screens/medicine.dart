@@ -1,0 +1,82 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pms/utils/constants.dart';
+import 'package:pms/utils/defaultContainer.dart';
+import 'package:pms/utils/defaultText.dart';
+import 'package:pms/utils/defaultTextFormField.dart';
+
+class Medicine extends StatelessWidget {
+  const Medicine({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Constants.backgroundColor,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back_ios,
+                        color: Constants.secondaryColor),
+                    iconSize: 25,
+                  ),
+                  const DefaultText(
+                    text: "Medicine",
+                    size: 20.0,
+                    color: Constants.secondaryColor,
+                  )
+                ],
+              ),
+              const SizedBox(height: 40.0),
+              const DefaultTextFormField(
+                label: "Search by name",
+                obscureText: false,
+                icon: Icons.search_outlined,
+                fillColor: Colors.white,
+                maxLines: 1,
+              ),
+              const SizedBox(height: 50),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: 10,
+                  itemBuilder: (BuildContext context, int index) {
+                    return DefaultContainer(
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed('/patient_details',
+                            arguments: {"patient": index}),
+                        child: ListTile(
+                          title: DefaultText(text: "Drug Name $index"),
+                          subtitle: DefaultText(text: "Drug Price $index"),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.toNamed('/add_patient');
+          },
+          child: const DefaultText(
+            text: "+",
+            size: 30,
+            weight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
