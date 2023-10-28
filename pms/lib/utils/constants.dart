@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultText.dart';
+import 'package:pms/utils/defaultTextFormField.dart';
 
 class Constants {
   // static const Color primaryColor = Colors.blue;
@@ -71,5 +73,79 @@ class Constants {
             ));
   }
 
-  
+  static void showDrugDetails(Size size, String name, String price,
+       BuildContext context) {
+    final _form = GlobalKey<FormState>();
+    late String _name, _price;
+
+    _updateDrug() {
+      var isValid = _form.currentState!.validate();
+      if (!isValid) return;
+      _form.currentState!.save();
+
+      print("Data collected: $_name, $_price");
+    }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (builder) {
+        return Container(
+          height: size.height / 2.5,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(100.0),
+              topRight: Radius.circular(100.0),
+            ),
+          ),
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            child: Column(
+              children: [
+                Form(
+                  key: _form,
+                  child: Column(
+                    children: [
+                      DefaultTextFormField(
+                        text: TextEditingController(text: name),
+                        obscureText: false,
+                        hintText: "Name",
+                        label: "Name",
+                        validator: Constants.validator,
+                        onSaved: (newValue) => _name = newValue!,
+                      ),
+                      const SizedBox(height: 20.0),
+                      DefaultTextFormField(
+                        text: TextEditingController(text: price),
+                        obscureText: false,
+                        hintText: "Price",
+                        label: "Price",
+                        validator: Constants.validator,
+                        keyboardInputType: TextInputType.number,
+                        onSaved: (newValue) => _price = newValue!,
+                      ),
+                      // const Spacer(),
+                      const SizedBox(height: 20.0),
+                      SizedBox(
+                        width: size.width,
+                        child: DefaultButton(
+                            onPressed: () {
+                              // controller.isClicked.value = true;
+                              _updateDrug();
+                            },
+                            textSize: 18,
+                            child: const DefaultText(
+                              text: "Update Drug",
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
