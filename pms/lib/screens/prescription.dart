@@ -17,7 +17,7 @@ class Prescription extends StatelessWidget {
 
   final _form = GlobalKey<FormState>();
 
-  late String _diagnosis, _visitDate;
+  late String _diagnosis, _visitDate, _qty, _dosage;
   Map medicine = {'male': 'male', 'female': 'female'};
   late String _medicine;
 
@@ -76,32 +76,35 @@ class Prescription extends StatelessWidget {
                       ),
                       // const Spacer(),
                       const SizedBox(height: 20.0),
-                      DefaultDropDown(
-                        onChanged: (newVal) {
-                          controller.dropdownvalue.value = newVal;
-                        },
-                        dropdownMenuItemList: medicine
-                            .map((key, value) => MapEntry(
-                                key,
-                                DropdownMenuItem(
-                                  value: key,
-                                  child: DefaultText(
-                                    text: value.toString(),
-                                  ),
-                                )))
-                            .values
-                            .toList(),
-                        value: controller.dropdownvalue.value,
-                        text: "Medicine",
-                        onSaved: (newVal) {
-                          _medicine = newVal;
-                        },
-                        validator: (value) {
-                          if (value == null || value == '') {
-                            return "field is required";
-                          }
-                          return null;
-                        },
+                      Obx(
+                        () => DefaultDropDown(
+                          onChanged: (newVal) {
+                            controller.dropdownvalue.value = newVal;
+                            controller.name.value = newVal;
+                          },
+                          dropdownMenuItemList: medicine
+                              .map((key, value) => MapEntry(
+                                  key,
+                                  DropdownMenuItem(
+                                    value: key,
+                                    child: DefaultText(
+                                      text: value.toString(),
+                                    ),
+                                  )))
+                              .values
+                              .toList(),
+                          value: controller.dropdownvalue.value,
+                          text: "Medicine",
+                          onSaved: (newVal) {
+                            _medicine = newVal;
+                          },
+                          validator: (value) {
+                            if (value == null || value == '') {
+                              return "field is required";
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                       const SizedBox(height: 20.0),
 
@@ -109,26 +112,27 @@ class Prescription extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: DefaultTextFormField(
-                              label: "Quantity",
-                              obscureText: false,
-                              icon: Icons.date_range_outlined,
-                              fillColor: Colors.white,
-                              maxLines: 1,
-                              keyboardInputType: TextInputType.number,
-                              onSaved: (value) => _visitDate = value!,
-                            ),
-                          ),
+                              child: DefaultTextFormField(
+                            text: controller.qty.value,
+                            label: "Quantity",
+                            obscureText: false,
+                            icon: Icons.date_range_outlined,
+                            fillColor: Colors.white,
+                            maxLines: 1,
+                            keyboardInputType: TextInputType.number,
+                            onSaved: (value) => _qty = value!,
+                          )),
                           const SizedBox(width: 10.0),
                           Expanded(
                             child: DefaultTextFormField(
+                              text: controller.dosage.value,
                               label: "Dosage",
                               obscureText: false,
                               icon: Icons.date_range_outlined,
                               fillColor: Colors.white,
                               maxLines: 1,
                               keyboardInputType: TextInputType.number,
-                              onSaved: (value) => _visitDate = value!,
+                              onSaved: (value) => _dosage = value!,
                             ),
                           ),
                         ],
@@ -139,7 +143,7 @@ class Prescription extends StatelessWidget {
                         children: [
                           DefaultButton(
                               onPressed: () {
-                                controller.table();
+                                controller.populateTable();
                               },
                               textSize: 15.0,
                               child: const DefaultText(
@@ -148,53 +152,51 @@ class Prescription extends StatelessWidget {
                               ))
                         ],
                       ),
-                      Table(
-                        border: TableBorder.all(),
-                        columnWidths: const {
-                          0: FractionColumnWidth(
-                              0.4), // Adjust column widths as needed
-                          1: FractionColumnWidth(0.6),
-                        },
-                        children: [
-                          const TableRow(children: [
-                            TableCell(
-                              child: DefaultText(
-                                text: "Drug Name",
-                                size: 18.0,
-                              ),
-                            ),
-                            TableCell(
-                              child: DefaultText(
-                                text: "Quantity",
-                                size: 18.0,
-                              ),
-                            ),
-                            TableCell(
-                              child: DefaultText(
-                                text: "Dosage",
-                                size: 18.0,
-                              ),
-                            ),
-                            TableCell(
-                              child: DefaultText(
-                                text: "Action",
-                                size: 18.0,
-                              ),
-                            ),
-                          ]),
-                          for (var item in controller.drugList)
-                            TableRow(
-                              children: [
-                                TableCell(child: DefaultText(text: item.name)),
-                                TableCell(child: DefaultText(text: item.qty)),
+                      const SizedBox(height: 20.0),
+                      Obx(() => Table(
+                            border: TableBorder.all(),
+                            children: [
+                              const TableRow(children: [
                                 TableCell(
-                                    child: DefaultText(text: item.dosage)),
+                                  child: DefaultText(
+                                    text: "Drug Name",
+                                    size: 18.0,
+                                  ),
+                                ),
                                 TableCell(
-                                    child: DefaultText(text: item.dosage)),
-                              ],
-                            ),
-                        ],
-                      ),
+                                  child: DefaultText(
+                                    text: "Quantity",
+                                    size: 18.0,
+                                  ),
+                                ),
+                                TableCell(
+                                  child: DefaultText(
+                                    text: "Dosage",
+                                    size: 18.0,
+                                  ),
+                                ),
+                                TableCell(
+                                  child: DefaultText(
+                                    text: "Action",
+                                    size: 18.0,
+                                  ),
+                                ),
+                              ]),
+                              for (var item in controller.drugList)
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                        child: DefaultText(text: item.name)),
+                                    TableCell(
+                                        child: DefaultText(text: item.qty)),
+                                    TableCell(
+                                        child: DefaultText(text: item.dosage)),
+                                    TableCell(
+                                        child: DefaultText(text: item.dosage)),
+                                  ],
+                                ),
+                            ],
+                          )),
 
                       const Spacer(),
                       SizedBox(
@@ -202,6 +204,7 @@ class Prescription extends StatelessWidget {
                         child: Obx(() => DefaultButton(
                               onPressed: () {
                                 controller.isClicked.value = true;
+                                controller.makePayment(context);
                               },
                               textSize: 18,
                               child: controller.cir(),
