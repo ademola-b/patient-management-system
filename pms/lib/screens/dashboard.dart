@@ -37,7 +37,9 @@ class Dashboard extends StatelessWidget {
                 DefaultGesture(
                   svgAsset: "assets/images/pills_1.svg",
                   tag: "Prescription",
-                  func: () {},
+                  func: () {
+                    Get.toNamed('/prescription');
+                  },
                 ),
               ],
             ),

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pms/models/drug_list.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultText.dart';
 
-class PatientController extends GetxController {
-  var isClicked = false.obs;
-  var isEnabled = false.obs;
-
+class PrescriptionController extends GetxController {
   Rx<DateTime> pickedDate = DateTime.now().obs;
+  Rx<TextEditingController> visit_date = TextEditingController().obs;
   RxString dropdownvalue = ''.obs;
 
-  Rx<TextEditingController> firstname = TextEditingController().obs;
+  Constants consts = Constants();
 
-  Rx<TextEditingController> dob = TextEditingController().obs;
+  Rx<bool> isClicked = false.obs;
+  RxList drugList = <DrugList>[].obs;
+
+  cir() {
+    return Constants.circ(isClicked, "Proceed to Payment");
+  }
 
   Future<void> pickDate(context) async {
     var selectedDate = await showDatePicker(
@@ -34,15 +38,11 @@ class PatientController extends GetxController {
 
     if (selectedDate != null) {
       pickedDate.value = selectedDate;
-      dob.value.text = DateFormat("yyyy-MM-dd").format(pickedDate.value);
+      visit_date.value.text = DateFormat("yyyy-MM-dd").format(pickedDate.value);
     }
   }
 
-  cir() {
-    return Constants.circ(isClicked, "Update");
-  }
-
-  cir1() {
-    return Constants.circ(isClicked, "Submit");
+  table() {
+    print("clicked");
   }
 }

@@ -6,6 +6,7 @@ import 'package:pms/screens/navbar.dart';
 import 'package:pms/screens/patient_details.dart';
 import 'package:pms/screens/patient_history.dart';
 import 'package:pms/screens/patients.dart';
+import 'package:pms/screens/prescription.dart';
 import 'package:pms/screens/splash.dart';
 
 void main() async {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/patient_details', page: () => PatientDetail()),
         GetPage(name: '/patient_history', page: () => const PatientHistory()),
         GetPage(name: '/medicine', page: () => Medicine()),
+        GetPage(name: '/prescription', page: () => Prescription()),
       ],
     );
   }

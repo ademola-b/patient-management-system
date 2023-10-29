@@ -73,12 +73,15 @@ class Constants {
             ));
   }
 
-  static void showDrugDetails(Size size, String name, String price,
-       BuildContext context) {
+  static void showDrugDetails(
+      Size size, String nameText, String priceText, BuildContext context) {
     final _form = GlobalKey<FormState>();
     late String _name, _price;
 
-    _updateDrug() {
+    TextEditingController name = TextEditingController(text: nameText);
+    TextEditingController price = TextEditingController(text: priceText);
+
+    updateDrug() {
       var isValid = _form.currentState!.validate();
       if (!isValid) return;
       _form.currentState!.save();
@@ -107,7 +110,7 @@ class Constants {
                   child: Column(
                     children: [
                       DefaultTextFormField(
-                        text: TextEditingController(text: name),
+                        text: name,
                         obscureText: false,
                         hintText: "Name",
                         label: "Name",
@@ -116,7 +119,7 @@ class Constants {
                       ),
                       const SizedBox(height: 20.0),
                       DefaultTextFormField(
-                        text: TextEditingController(text: price),
+                        text: price,
                         obscureText: false,
                         hintText: "Price",
                         label: "Price",
@@ -131,11 +134,12 @@ class Constants {
                         child: DefaultButton(
                             onPressed: () {
                               // controller.isClicked.value = true;
-                              _updateDrug();
+                              updateDrug();
                             },
                             textSize: 18,
                             child: const DefaultText(
                               text: "Update Drug",
+                              size: 18.0,
                             )),
                       )
                     ],
@@ -147,5 +151,18 @@ class Constants {
         );
       },
     );
+  }
+
+  static Widget circ(Rx<bool> isClicked, String action) {
+    if (isClicked.value) {
+      print(isClicked);
+      return const CircularProgressIndicator(
+        color: Constants.altColor,
+      );
+    } else {
+      print(isClicked);
+
+      return DefaultText(text: action, color: Colors.white, size: 18.0);
+    }
   }
 }

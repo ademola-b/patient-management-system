@@ -32,7 +32,7 @@ class _DefaultDropDownState extends State<DefaultDropDown> {
     return DropdownButtonFormField<dynamic>(
       onSaved: widget.onSaved,
       validator: widget.validator,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
           borderSide: BorderSide(
@@ -45,11 +45,10 @@ class _DefaultDropDownState extends State<DefaultDropDown> {
             borderSide: BorderSide(color: Constants.primaryColor, width: 1.0)),
         filled: true,
         fillColor: Constants.altColor,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
       ),
       hint: DefaultText(
-        size: 20,
+        size: 18,
         text: widget.text,
         color: Constants.primaryColor,
       ),

@@ -163,7 +163,7 @@ class PatientDetail extends StatelessWidget {
                               child: Obx(() => DefaultButton(
                                     onPressed: () {},
                                     textSize: 18,
-                                    child: controller.circ("Update"),
+                                    child: controller.cir(),
                                   )))
                           : const SizedBox.shrink()
                     ],

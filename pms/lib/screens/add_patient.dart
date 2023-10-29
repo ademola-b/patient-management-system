@@ -154,7 +154,7 @@ class AddPatient extends StatelessWidget {
                                 _submit();
                               },
                               textSize: 18,
-                              child: controller.circ("Submit"))),
+                              child: controller.cir1())),
                         )
                       ],
                     ))

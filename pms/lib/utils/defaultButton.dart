@@ -5,7 +5,7 @@ import 'package:pms/utils/constants.dart';
 class DefaultButton extends StatelessWidget {
   final Function onPressed;
   // final String text;
-  final double textSize;
+  final double? textSize;
   final FontWeight? textWeight;
   final Size? size;
   Color? color;
@@ -16,7 +16,7 @@ class DefaultButton extends StatelessWidget {
       {Key? key,
       required this.onPressed,
       // required this.text,
-      required this.textSize,
+      this.textSize,
       this.color = Constants.primaryColor,
       this.textColor,
       this.textWeight,
