@@ -22,12 +22,15 @@ class PaymentSuccessful extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
           children: [
-            DefaultText(text: data),
+            const Spacer(),
+            DefaultText(text: data, size: 18.0),
             const Spacer(),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: DefaultButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.close(2);
+                },
                 child: const DefaultText(
                   text: "Go Back",
                   size: 18,

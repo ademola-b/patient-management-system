@@ -4,12 +4,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pms/models/drug_list.dart';
 import 'package:pms/utils/constants.dart';
-import 'package:pms/utils/defaultText.dart';
 
 class PrescriptionController extends GetxController {
   Rx<DateTime> pickedDate = DateTime.now().obs;
   Rx<TextEditingController> visit_date = TextEditingController().obs;
-  RxString name = ''.obs;
+  RxString? name = ''.obs;
   Rx<TextEditingController> qty = TextEditingController().obs;
   Rx<TextEditingController> dosage = TextEditingController().obs;
   RxString dropdownvalue = ''.obs;
@@ -17,6 +16,7 @@ class PrescriptionController extends GetxController {
   RxList drugList = <DrugList>[].obs;
   String publicKey = 'pk_test_967fd6ae89cd3a4c7b03b27c93083beab0329110';
   RxString message = ''.obs;
+  RxDouble total = 0.0.obs;
 
   final plugin = PaystackPlugin();
 
@@ -76,7 +76,13 @@ class PrescriptionController extends GetxController {
 
   populateTable() {
     drugList.add(DrugList(
-        name: name.value, qty: qty.value.text, dosage: dosage.value.text));
+        name: name!.value,
+        price: 22.5,
+        total: double.parse(qty.value.text) * 10.0,
+        qty: qty.value.text,
+        dosage: dosage.value.text));
     print(drugList[0].name);
+
+    // total.value = ;
   }
 }

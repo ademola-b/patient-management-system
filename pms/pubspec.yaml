@@ -48,6 +48,7 @@ dependencies:
     git:
       url: https://github.com/peterchibunna/flutter_paystack
       ref: master
+  dropdown_search: ^3.0.1
 
 dev_dependencies:
   flutter_test:

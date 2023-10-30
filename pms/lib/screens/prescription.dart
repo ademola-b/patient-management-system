@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -19,7 +20,7 @@ class Prescription extends StatelessWidget {
 
   late String _diagnosis, _visitDate, _qty, _dosage;
   Map medicine = {'male': 'male', 'female': 'female'};
-  late String _medicine;
+  late String? _medicine;
 
   @override
   Widget build(BuildContext context) {
@@ -76,36 +77,20 @@ class Prescription extends StatelessWidget {
                       ),
                       // const Spacer(),
                       const SizedBox(height: 20.0),
-                      Obx(
-                        () => DefaultDropDown(
-                          onChanged: (newVal) {
-                            controller.dropdownvalue.value = newVal;
-                            controller.name.value = newVal;
-                          },
-                          dropdownMenuItemList: medicine
-                              .map((key, value) => MapEntry(
-                                  key,
-                                  DropdownMenuItem(
-                                    value: key,
-                                    child: DefaultText(
-                                      text: value.toString(),
-                                    ),
-                                  )))
-                              .values
-                              .toList(),
-                          value: controller.dropdownvalue.value,
-                          text: "Medicine",
-                          onSaved: (newVal) {
-                            _medicine = newVal;
-                          },
-                          validator: (value) {
-                            if (value == null || value == '') {
-                              return "field is required";
-                            }
-                            return null;
-                          },
-                        ),
+                      DropdownSearch<String>(
+                        mode: Mode.MENU,
+                        items: const ['paracetamol', 'asprin'],
+                        showSearchBox: true,
+                        dropdownSearchDecoration: const InputDecoration(
+                            labelText: "Medicine",
+                            border: UnderlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0)),
+                                borderSide: BorderSide(color: Colors.white))),
+                        onChanged: (value) => controller.name!.value = value!,
+                        validator: Constants.validator,
                       ),
+
                       const SizedBox(height: 20.0),
 
                       Row(
@@ -139,8 +124,13 @@ class Prescription extends StatelessWidget {
                       ),
                       const SizedBox(height: 20.0),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          const DefaultText(
+                            text: "Total: X",
+                            size: 18.0,
+                            color: Constants.secondaryColor,
+                          ),
                           DefaultButton(
                               onPressed: () {
                                 controller.populateTable();
@@ -156,32 +146,51 @@ class Prescription extends StatelessWidget {
                       Obx(() => Table(
                             border: TableBorder.all(),
                             children: [
-                              const TableRow(children: [
-                                TableCell(
-                                  child: DefaultText(
-                                    text: "Drug Name",
-                                    size: 18.0,
-                                  ),
-                                ),
-                                TableCell(
-                                  child: DefaultText(
-                                    text: "Quantity",
-                                    size: 18.0,
-                                  ),
-                                ),
-                                TableCell(
-                                  child: DefaultText(
-                                    text: "Dosage",
-                                    size: 18.0,
-                                  ),
-                                ),
-                                TableCell(
-                                  child: DefaultText(
-                                    text: "Action",
-                                    size: 18.0,
-                                  ),
-                                ),
-                              ]),
+                              const TableRow(
+                                  decoration: BoxDecoration(
+                                      color: Constants.secondaryColor),
+                                  children: [
+                                    TableCell(
+                                      child: DefaultText(
+                                        text: "Name",
+                                        size: 18.0,
+                                        color: Constants.altColor,
+                                        align: TextAlign.center,
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: DefaultText(
+                                        text: "QTY",
+                                        size: 18.0,
+                                        color: Constants.altColor,
+                                        align: TextAlign.center,
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: DefaultText(
+                                        text: "Price",
+                                        size: 18.0,
+                                        color: Constants.altColor,
+                                        align: TextAlign.center,
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: DefaultText(
+                                        text: "Total",
+                                        size: 18.0,
+                                        color: Constants.altColor,
+                                        align: TextAlign.center,
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: DefaultText(
+                                        text: "Action",
+                                        size: 18.0,
+                                        color: Constants.altColor,
+                                        align: TextAlign.center,
+                                      ),
+                                    ),
+                                  ]),
                               for (var item in controller.drugList)
                                 TableRow(
                                   children: [
@@ -190,9 +199,18 @@ class Prescription extends StatelessWidget {
                                     TableCell(
                                         child: DefaultText(text: item.qty)),
                                     TableCell(
-                                        child: DefaultText(text: item.dosage)),
+                                        child: DefaultText(
+                                            text: item.price.toString())),
                                     TableCell(
-                                        child: DefaultText(text: item.dosage)),
+                                        child: DefaultText(
+                                            text: item.total.toString())),
+                                    TableCell(
+                                        child: IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ))),
                                   ],
                                 ),
                             ],
