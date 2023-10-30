@@ -20,7 +20,7 @@ class PatientDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(data);
+    // print(data);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Constants.backgroundColor,
@@ -36,7 +36,7 @@ class PatientDetail extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       DefaultText(
-                          text: "${data['patient']} Profile",
+                          text: "['patient'] Profile",
                           color: Colors.white,
                           size: 20.0),
                       IconButton(
@@ -68,7 +68,7 @@ class PatientDetail extends StatelessWidget {
                   ]),
                   const SizedBox(height: 10.0),
                   DefaultText(
-                    text: "${data['patient']}",
+                    text: "['patient']",
                     weight: FontWeight.bold,
                     size: 20.0,
                     color: Colors.white,
@@ -100,6 +100,7 @@ class PatientDetail extends StatelessWidget {
                   () => Column(
                     children: [
                       Obx(() => DefaultTextFormField(
+                            text: controller.name.value,
                             obscureText: false,
                             fontSize: 20.0,
                             label: "Name",
@@ -108,6 +109,7 @@ class PatientDetail extends StatelessWidget {
                           )),
                       const SizedBox(height: 20.0),
                       Obx(() => DefaultTextFormField(
+                            text: controller.address.value,
                             obscureText: false,
                             fontSize: 20.0,
                             label: "Address",
@@ -129,6 +131,7 @@ class PatientDetail extends StatelessWidget {
                           )),
                       const SizedBox(height: 20.0),
                       Obx(() => DefaultTextFormField(
+                            text: controller.phone.value,
                             obscureText: false,
                             fontSize: 20.0,
                             label: "Phone",
@@ -137,25 +140,15 @@ class PatientDetail extends StatelessWidget {
                             enabled: controller.isEnabled.value,
                           )),
                       const SizedBox(height: 20.0),
-                      DefaultDropDown(
-                        onChanged: (newVal) {
-                          controller.dropdownvalue.value = newVal;
-                        },
-                        dropdownMenuItemList: gender
-                            .map((key, value) => MapEntry(
-                                key,
-                                DropdownMenuItem(
-                                  value: key,
-                                  child: DefaultText(
-                                    text: value.toString(),
-                                  ),
-                                )))
-                            .values
-                            .toList(),
-                        value: controller.dropdownvalue.value,
-                        text: "Gender",
-                        onSaved: (newVal) {},
-                      ),
+                      Obx(() => DefaultTextFormField(
+                            text: controller.gender.value,
+                            obscureText: false,
+                            fontSize: 20.0,
+                            label: "Gender",
+                            fillColor: Colors.white,
+                            keyboardInputType: TextInputType.phone,
+                            enabled: controller.isEnabled.value,
+                          )),
                       const SizedBox(height: 30.0),
                       controller.isEnabled.value
                           ? SizedBox(

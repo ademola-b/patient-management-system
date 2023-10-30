@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultContainer.dart';
 import 'package:pms/utils/defaultText.dart';
@@ -46,30 +49,44 @@ class Patients extends StatelessWidget {
                 maxLines: 1,
               ),
               const SizedBox(height: 50),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: 10,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DefaultContainer(
-                      child: GestureDetector(
-                        onTap: () => Get.toNamed('/patient_details',
-                            arguments: {"patient": index}),
-                        child: ListTile(
-                          leading: ClipOval(
-                              child: Image.asset(
-                            "assets/images/default.jpg",
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )),
-                          title: DefaultText(text: "Name $index"),
-                        ),
+              FutureBuilder(
+                future: RemoteServices.patientList(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data!.isEmpty) {
+                    return DefaultText(text: "No Patient");
+                  } else if (snapshot.hasData) {
+                    var data = snapshot.data;
+                    return Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return DefaultContainer(
+                            child: GestureDetector(
+                              onTap: () => Get.toNamed('/patient_details',
+                                  arguments: {
+                                    "patient": data[index].patientId
+                                  }),
+                              child: ListTile(
+                                leading: ClipOval(
+                                    child: Image.memory(
+                                  base64Decode(data[index].imgMem.toString()),
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                )),
+                                title: DefaultText(text: "${data[index].name}"),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
-                  },
-                ),
+                  }
+                  return const CircularProgressIndicator(
+                      color: Constants.altColor);
+                },
               )
             ],
           ),

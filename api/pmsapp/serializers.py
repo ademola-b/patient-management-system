@@ -14,6 +14,7 @@ class PatientSerializer(serializers.ModelSerializer):
             "patient_id",
             "name",
             "dob",
+            "address",
             "phone",
             "gender",
             "picture",
