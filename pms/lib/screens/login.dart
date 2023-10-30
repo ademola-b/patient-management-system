@@ -90,7 +90,6 @@ class Login extends StatelessWidget {
                             width: MediaQuery.of(context).size.width,
                             child: Obx(() => DefaultButton(
                                   onPressed: () {
-                                    Get.offAllNamed('/navbar');
                                     _login();
                                     // controller.isClicked.value = true;
                                   },
