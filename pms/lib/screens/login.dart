@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pms/controllers/login_controller.dart';
+import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultText.dart';
@@ -17,6 +18,16 @@ class Login extends StatelessWidget {
   late String _password;
 
   Login({super.key});
+
+  _login() async {
+    controller.isClicked.value = true;
+    var isValid = _form.currentState!.validate();
+    if (!isValid) return;
+
+    _form.currentState!.save();
+    await RemoteServices.login(_username, _password);
+    controller.isClicked.value = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +91,7 @@ class Login extends StatelessWidget {
                             child: Obx(() => DefaultButton(
                                   onPressed: () {
                                     Get.offAllNamed('/navbar');
-                                    // _login();
+                                    _login();
                                     // controller.isClicked.value = true;
                                   },
                                   textSize: 18,

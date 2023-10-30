@@ -9,10 +9,13 @@ import 'package:pms/screens/patients.dart';
 import 'package:pms/screens/payment_success.dart';
 import 'package:pms/screens/prescription.dart';
 import 'package:pms/screens/splash.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+late SharedPreferences sharedPreferences;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences = await SharedPreferences.getInstance();
 
   runApp(const MyApp());
 }
