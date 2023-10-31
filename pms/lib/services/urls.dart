@@ -13,3 +13,5 @@ Uri medicineListUrl = Uri.parse("$baseUrl/api/medicine/");
 Uri medicineDetailUrl(String id) {
   return Uri.parse("$baseUrl/api/medicine/$id/");
 }
+
+Uri prescribeDrugUrl = Uri.parse("$baseUrl/api/prescription/");

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pms/models/login_response.dart';
 import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
+import 'package:pms/models/prescription_create_response.dart';
 import 'package:pms/services/urls.dart';
 import 'package:http/http.dart' as http;
 import 'package:pms/utils/constants.dart';
@@ -79,6 +80,7 @@ class RemoteServices {
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
   }
+
   static Future<List<MedicineResponse>?>? medicineList() async {
     try {
       http.Response response = await http.get(medicineListUrl, headers: {
@@ -102,6 +104,30 @@ class RemoteServices {
       });
       if (response.statusCode == 200) {
         return medicineResponseFromJson(response.body);
+      }
+    } catch (e) {
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<PrescriptionCreateResponse?> prescribeDrugs(
+      {required List<Map<String, dynamic>>? drugsPrescribe,
+      required String patient}) async {
+    try {
+      http.Response response = await http.post(prescribeDrugUrl,
+          body: jsonEncode(
+              {'patient': patient, 'drug_prescribed': drugsPrescribe}),
+          headers: {
+            'content-type': 'application/json; charset=UTF-8',
+            'Authorization': "Token ${sharedPreferences.getString('token')}"
+          });
+      if (response.statusCode == 201) {
+        Get.showSnackbar(
+            Constants.customSnackBar(message: "Prescription Saved", tag: true));
+      } else {
+        print(jsonDecode(response.body));
+        throw Exception("An error occurred");
       }
     } catch (e) {
       Get.showSnackbar(

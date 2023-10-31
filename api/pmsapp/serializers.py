@@ -26,10 +26,10 @@ class PatientSerializer(serializers.ModelSerializer):
                 return base64.b64encode(loadedfile.read())
             
 class MedicineSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Medicine
         fields = "__all__"
+
 
 class DrugPrescribedSerializer(serializers.ModelSerializer):
     # prescription = PrescriptionSerializer()

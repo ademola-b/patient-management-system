@@ -23,6 +23,13 @@ class Prescription extends StatelessWidget {
   late String _diagnosis, _visitDate, _qty, _dosage;
   late String? _medicine;
 
+  removeDrug(int index, var removedItem, var drugId) {
+    controller.drugList.removeAt(index);
+
+    controller.drugPrescribed
+        .removeWhere((element) => element['drug'] == drugId);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -57,25 +64,25 @@ class Prescription extends StatelessWidget {
                   child: Column(
                     children: [
                       DropdownSearch<PatientListResponse>(
-                          mode: Mode.MENU,
-                          items: controller.patients,
-                          showSearchBox: true,
-                          itemAsString: (PatientListResponse? patient) =>
-                              patient!.name!,
-                          dropdownSearchDecoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              labelText: "Patient",
-                              border: UnderlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)),
-                                  borderSide: BorderSide(color: Colors.white))),
-                          onChanged: (PatientListResponse? value) {
-                            controller.patient!.value = value!.name!;
-                            print(value.patientId);
-                          }
-                          // validator: Constants.validator,
-                          ),
+                        mode: Mode.MENU,
+                        items: controller.patients,
+                        showSearchBox: true,
+                        itemAsString: (PatientListResponse? patient) =>
+                            patient!.name!,
+                        dropdownSearchDecoration: const InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            labelText: "Patient",
+                            border: UnderlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0)),
+                                borderSide: BorderSide(color: Colors.white))),
+                        onChanged: (PatientListResponse? value) {
+                          controller.patient!.value = value!.patientId!;
+                          print(value.patientId);
+                        },
+                        validator: Constants.patientValidator,
+                      ),
                       const SizedBox(height: 20.0),
                       DefaultTextFormField(
                         obscureText: false,
@@ -85,19 +92,6 @@ class Prescription extends StatelessWidget {
                         fillColor: Colors.white,
                         onSaved: (newValue) => _diagnosis = newValue!,
                       ),
-                      // const SizedBox(height: 20.0),
-                      // DefaultTextFormField(
-                      //   label: "Visitation Date",
-                      //   text: controller.visit_date.value,
-                      //   obscureText: false,
-                      //   icon: Icons.date_range_outlined,
-                      //   fillColor: Colors.white,
-                      //   maxLines: 1,
-                      //   onTap: () => controller.pickDate(context),
-                      //   keyboardInputType: TextInputType.none,
-                      //   onSaved: (value) => _visitDate = value!,
-                      // ),
-                      // const Spacer(),
                       const SizedBox(height: 20.0),
                       DropdownSearch<MedicineResponse>(
                         mode: Mode.MENU,
@@ -115,12 +109,11 @@ class Prescription extends StatelessWidget {
                         onChanged: (value) {
                           controller.medicine!.value = value!.name!;
                           controller.price!.value = value.price!;
+                          controller.medicineId!.value = value.medicineId!;
                         },
                         validator: Constants.medicineValidator,
                       ),
-
                       const SizedBox(height: 20.0),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -162,6 +155,10 @@ class Prescription extends StatelessWidget {
                               )),
                           DefaultButton(
                               onPressed: () {
+                                var isValid = _form.currentState!.validate();
+                                if (!isValid) return;
+
+                                _form.currentState!.save();
                                 controller.populateTable();
                               },
                               textSize: 15.0,
@@ -220,22 +217,40 @@ class Prescription extends StatelessWidget {
                                       ),
                                     ),
                                   ]),
-                              for (var item in controller.drugList)
+                              for (var index = 0;
+                                  index < controller.drugList.length;
+                                  index++)
                                 TableRow(
                                   children: [
                                     TableCell(
-                                        child: DefaultText(text: item.name)),
-                                    TableCell(
-                                        child: DefaultText(text: item.qty)),
+                                        child: DefaultText(
+                                            text: controller
+                                                .drugList[index].name)),
                                     TableCell(
                                         child: DefaultText(
-                                            text: item.price.toString())),
+                                            text: controller
+                                                .drugList[index].qty)),
                                     TableCell(
                                         child: DefaultText(
-                                            text: item.total.toString())),
+                                            text: controller
+                                                .drugList[index].price
+                                                .toString())),
+                                    TableCell(
+                                        child: DefaultText(
+                                            text: controller
+                                                .drugList[index].total
+                                                .toString())),
                                     TableCell(
                                         child: IconButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              removeDrug(
+                                                  index,
+                                                  controller.drugList[index],
+                                                  controller
+                                                      .drugList[index].drugId);
+                                              print(controller.drugList);
+                                              print(controller.drugPrescribed);
+                                            },
                                             icon: const Icon(
                                               Icons.delete,
                                               color: Colors.red,
@@ -244,7 +259,6 @@ class Prescription extends StatelessWidget {
                                 ),
                             ],
                           )),
-
                       const Spacer(),
                       SizedBox(
                         width: size.width,

@@ -12,7 +12,9 @@ class PrescriptionController extends GetxController {
   Rx<DateTime> pickedDate = DateTime.now().obs;
   Rx<TextEditingController> visit_date = TextEditingController().obs;
   RxString? medicine = ''.obs;
+  RxString? selectedMedicine = ''.obs;
   RxString? patient = ''.obs;
+  RxString? medicineId = ''.obs;
   RxDouble? price = 0.0.obs;
   Rx<TextEditingController> qty = TextEditingController().obs;
   Rx<TextEditingController> dosage = TextEditingController().obs;
@@ -25,6 +27,8 @@ class PrescriptionController extends GetxController {
   RxDouble gtotal = 0.0.obs;
   RxList<PatientListResponse> patients = <PatientListResponse>[].obs;
   RxList<MedicineResponse> medicines = <MedicineResponse>[].obs;
+
+  RxList<Map<String, dynamic>> drugPrescribed = <Map<String, dynamic>>[].obs;
 
   final plugin = PaystackPlugin();
 
@@ -63,7 +67,11 @@ class PrescriptionController extends GetxController {
 
     if (response.status == true) {
       message.value = 'Payment was successful. Ref: ${response.reference}';
-      Get.toNamed('/payment_success', arguments: message.value);
+      Get.toNamed('/payment_success', arguments: {
+        'message': message.value,
+        'drug_prescribed': drugPrescribed,
+        'patientId': patient!.value
+      });
     } else {
       print(response.message);
     }
@@ -100,18 +108,32 @@ class PrescriptionController extends GetxController {
 
   populateTable() {
     drugList.add(DrugList(
+        drugId: medicineId!.value,
         name: medicine!.value,
         price: price!.value,
         total: double.parse(qty.value.text) * price!.value,
         qty: qty.value.text,
         dosage: dosage.value.text));
 
+    // print(drugList[0].drugId);
+    selectedMedicine!.value = medicine!.value;
+
+    Map<String, dynamic> item = {
+      "drug": medicineId!.value,
+      "qty": qty.value.text,
+      "dosage": dosage.value.text,
+      "price": price!.value,
+      "total": int.parse(qty.value.text) * price!.value,
+    };
+
+    drugPrescribed.add(item);
+    print(drugPrescribed);
   }
 
   double calculateTotal(RxList drugList) {
     double total = 0.0;
-    for (var drug in drugList) {
-      total += drug.total;
+    for (var drug in drugPrescribed) {
+      total += drug['total'];
     }
 
     return total;

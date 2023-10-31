@@ -47,25 +47,7 @@ class DrugPrescribeView(CreateAPIView):
             
         )
 
-        # prescription_serializer = PrescriptionSerializer(data=prescription_data)
-        # if prescription_serializer.is_valid():
-        #     prescription = prescription_serializer.save()
-
-        #     drug_prescribed_data = data.get('drug_prescribed', [])
-        #     drug_prescribed_instances = []
-
-        #     for item in drug_prescribed_data:
-        #         item['prescription'] = prescription.pk
-        #         drug_prescribed_serializer = DrugPrescribedSerializer(data=item)
-        #         if drug_prescribed_serializer.is_valid():
-        #             drug_prescribed = drug_prescribed_serializer.save()
-        #             drug_prescribed_instances.append(drug_prescribed)
-
-        #     return Response({'prescription':prescription_serializer.data, 'drug_prescribed':drug_prescribed_instances}, status=status.HTTP_201_CREATED)
-        # return Response(prescription_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-        
+      
 
 
     # def post(self, request):
@@ -103,9 +85,13 @@ class PrescriptionView(ListCreateAPIView):
                 dp_serializer = DrugPrescribedSerializer(data=dp_data)
                 if dp_serializer.is_valid():
                     dp_instance = dp_serializer.save()
+                    print(f"totale: {dp_instance.total}")
                     total += dp_instance.total
                 else:
                     return Response(dp_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                
+                prescription_instance.total = total
+                prescription_instance.save()
 
 
             return Response(prescription_serializer.data, status=status.HTTP_201_CREATED)

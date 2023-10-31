@@ -1,5 +1,5 @@
-
 class DrugList {
+  final String? drugId;
   final String name;
   final double price;
   final double total;
@@ -7,6 +7,7 @@ class DrugList {
   final String dosage;
 
   const DrugList({
+    this.drugId,
     required this.name,
     required this.price,
     required this.total,
