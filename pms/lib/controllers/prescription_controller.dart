@@ -3,12 +3,17 @@ import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pms/models/drug_list.dart';
+import 'package:pms/models/medicine_response.dart';
+import 'package:pms/models/patient_list_response.dart';
+import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 
 class PrescriptionController extends GetxController {
   Rx<DateTime> pickedDate = DateTime.now().obs;
   Rx<TextEditingController> visit_date = TextEditingController().obs;
-  RxString? name = ''.obs;
+  RxString? medicine = ''.obs;
+  RxString? patient = ''.obs;
+  RxDouble? price = 0.0.obs;
   Rx<TextEditingController> qty = TextEditingController().obs;
   Rx<TextEditingController> dosage = TextEditingController().obs;
   RxString dropdownvalue = ''.obs;
@@ -17,13 +22,32 @@ class PrescriptionController extends GetxController {
   String publicKey = 'pk_test_967fd6ae89cd3a4c7b03b27c93083beab0329110';
   RxString message = ''.obs;
   RxDouble total = 0.0.obs;
+  RxDouble gtotal = 0.0.obs;
+  RxList<PatientListResponse> patients = <PatientListResponse>[].obs;
+  RxList<MedicineResponse> medicines = <MedicineResponse>[].obs;
 
   final plugin = PaystackPlugin();
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     plugin.initialize(publicKey: publicKey);
+    await patientList();
+    await medicineList();
+  }
+
+  patientList() async {
+    List<PatientListResponse>? patientList = await RemoteServices.patientList();
+    if (patientList!.isNotEmpty) {
+      patients.value = patientList;
+    }
+  }
+
+  medicineList() async {
+    List<MedicineResponse>? medicineList = await RemoteServices.medicineList();
+    if (medicineList!.isNotEmpty) {
+      medicines.value = medicineList;
+    }
   }
 
   void makePayment(context) async {
@@ -76,13 +100,20 @@ class PrescriptionController extends GetxController {
 
   populateTable() {
     drugList.add(DrugList(
-        name: name!.value,
-        price: 22.5,
-        total: double.parse(qty.value.text) * 10.0,
+        name: medicine!.value,
+        price: price!.value,
+        total: double.parse(qty.value.text) * price!.value,
         qty: qty.value.text,
         dosage: dosage.value.text));
-    print(drugList[0].name);
 
-    // total.value = ;
+  }
+
+  double calculateTotal(RxList drugList) {
+    double total = 0.0;
+    for (var drug in drugList) {
+      total += drug.total;
+    }
+
+    return total;
   }
 }

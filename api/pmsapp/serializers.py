@@ -3,7 +3,7 @@ from django.core.files.storage import default_storage
 
 from rest_framework import serializers
 
-from . models import Patient, Medicine, Prescription
+from . models import *
 
 class PatientSerializer(serializers.ModelSerializer):
     imgMem = serializers.SerializerMethodField('image_memory')
@@ -31,8 +31,17 @@ class MedicineSerializer(serializers.ModelSerializer):
         model = Medicine
         fields = "__all__"
 
-class PrescriptionSerializer(serializers.ModelSerializer):
+class DrugPrescribedSerializer(serializers.ModelSerializer):
+    # prescription = PrescriptionSerializer()
+    class Meta:
+        model = DrugPrescribed
+        fields = "__all__" 
 
+class PrescriptionSerializer(serializers.ModelSerializer):
+    drug_prescribed = DrugPrescribedSerializer(many=True, required=False)
+    total = serializers.CharField(required=False)
     class Meta:
         model = Prescription
         fields = "__all__"
+
+

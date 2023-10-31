@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:pms/models/login_response.dart';
+import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
 import 'package:pms/services/urls.dart';
 import 'package:http/http.dart' as http;
@@ -74,6 +75,35 @@ class RemoteServices {
       }
     } catch (e) {
       print(e);
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+  static Future<List<MedicineResponse>?>? medicineList() async {
+    try {
+      http.Response response = await http.get(medicineListUrl, headers: {
+        'Authorization': "Token ${sharedPreferences.getString('token')}"
+      });
+      if (response.statusCode == 200) {
+        return medicineListResponseFromJson(response.body);
+      } else {
+        throw Exception("Failed to get medicine");
+      }
+    } catch (e) {
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<MedicineResponse?> medicineDetails(String id) async {
+    try {
+      http.Response response = await http.get(medicineDetailUrl(id), headers: {
+        'Authorization': "Token ${sharedPreferences.getString('token')}"
+      });
+      if (response.statusCode == 200) {
+        return medicineResponseFromJson(response.body);
+      }
+    } catch (e) {
       Get.showSnackbar(
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }

@@ -24,7 +24,9 @@ class PatientController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await patientDetails();
+    if (data != null) {
+      await patientDetails();
+    }
   }
 
   patientDetails() async {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultContainer.dart';
@@ -116,7 +117,6 @@ class Medicine extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                    
                                     ],
                                   ),
                                 ),
@@ -128,27 +128,47 @@ class Medicine extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20.0),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: 10,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DefaultContainer(
-                      child: GestureDetector(
-                        onTap: () {
-                          Constants.showDrugDetails(size, "Drug Name $index",
-                              "Drug price $index", context);
-                        },
-                        child: ListTile(
-                          title: DefaultText(text: "Drug Name $index"),
-                          subtitle: DefaultText(text: "Drug Price $index"),
+              FutureBuilder(
+                  future: RemoteServices.medicineList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return DefaultText(
+                        text: "No Drug",
+                      );
+                    } else if (snapshot.hasData) {
+                      var data = snapshot.data;
+                      return Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: data!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return DefaultContainer(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Constants.showDrugDetails(
+                                      size,
+                                      "${data[index].name}",
+                                      "${data[index].price}",
+                                      context);
+                                },
+                                child: ListTile(
+                                  title: DefaultText(
+                                      text: data[index].name,
+                                      color: Constants.secondaryColor,
+                                      size: 18.0),
+                                  trailing: DefaultText(
+                                      text: data[index].price.toString()),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    );
-                  },
-                ),
-              )
+                      );
+                    }
+                    return const CircularProgressIndicator(
+                        color: Constants.secondaryColor);
+                  })
             ],
           ),
         ),

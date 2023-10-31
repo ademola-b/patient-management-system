@@ -25,15 +25,40 @@ class Medicine(models.Model):
     
 class Prescription(models.Model):
     pres_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
-    date = models.DateField()
+    date = models.DateField(auto_now_add=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    total = models.FloatField()
+    payment_made = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.patient} - {self.total} - {self.payment_made}"
+
+
+class DrugPrescribed(models.Model):
+    drugpres_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     drug = models.ForeignKey(Medicine, on_delete=models.DO_NOTHING)
     qty = models.IntegerField()
     dosage = models.IntegerField()
     total = models.FloatField()
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, default=None)
 
     def __str__(self):
-        return f"{self.patient} - {self.drug.name}"
+        return f"{self.drug} - {self.total}"
+    
+
+
+    
+# class Prescription(models.Model):
+#     pres_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
+#     date = models.DateField(auto_now_add=True)
+#     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+#     drug = models.ForeignKey(Medicine, on_delete=models.DO_NOTHING)
+#     qty = models.IntegerField()
+#     dosage = models.IntegerField()
+#     total = models.FloatField()
+
+#     def __str__(self):
+#         return f"{self.patient} - {self.drug.name}"
     
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pms/models/medicine_response.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultText.dart';
 import 'package:pms/utils/defaultTextFormField.dart';
@@ -14,6 +15,13 @@ class Constants {
 
   static String? validator(String? value) {
     if (value == null || value.isEmpty) {
+      return "Field is required";
+    }
+    return null;
+  }
+
+  static String? medicineValidator(MedicineResponse? value) {
+    if (value == null) {
       return "Field is required";
     }
     return null;

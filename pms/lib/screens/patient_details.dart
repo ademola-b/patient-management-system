@@ -35,8 +35,8 @@ class PatientDetail extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      DefaultText(
-                          text: "['patient'] Profile",
+                      const DefaultText(
+                          text: "Patient Profile",
                           color: Colors.white,
                           size: 20.0),
                       IconButton(
@@ -68,7 +68,7 @@ class PatientDetail extends StatelessWidget {
                   ]),
                   const SizedBox(height: 10.0),
                   DefaultText(
-                    text: "['patient']",
+                    text: controller.name.value.text,
                     weight: FontWeight.bold,
                     size: 20.0,
                     color: Colors.white,

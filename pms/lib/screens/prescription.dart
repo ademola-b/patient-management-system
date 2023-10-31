@@ -5,6 +5,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:pms/controllers/prescription_controller.dart';
+import 'package:pms/models/medicine_response.dart';
+import 'package:pms/models/patient_list_response.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultDropDown.dart';
@@ -19,7 +21,6 @@ class Prescription extends StatelessWidget {
   final _form = GlobalKey<FormState>();
 
   late String _diagnosis, _visitDate, _qty, _dosage;
-  Map medicine = {'male': 'male', 'female': 'female'};
   late String? _medicine;
 
   @override
@@ -49,12 +50,33 @@ class Prescription extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(height: 40.0),
+              const SizedBox(height: 20.0),
               Expanded(
                 child: Form(
                   key: _form,
                   child: Column(
                     children: [
+                      DropdownSearch<PatientListResponse>(
+                          mode: Mode.MENU,
+                          items: controller.patients,
+                          showSearchBox: true,
+                          itemAsString: (PatientListResponse? patient) =>
+                              patient!.name!,
+                          dropdownSearchDecoration: const InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              labelText: "Patient",
+                              border: UnderlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0)),
+                                  borderSide: BorderSide(color: Colors.white))),
+                          onChanged: (PatientListResponse? value) {
+                            controller.patient!.value = value!.name!;
+                            print(value.patientId);
+                          }
+                          // validator: Constants.validator,
+                          ),
+                      const SizedBox(height: 20.0),
                       DefaultTextFormField(
                         obscureText: false,
                         hintText: "Diagnosis",
@@ -63,32 +85,38 @@ class Prescription extends StatelessWidget {
                         fillColor: Colors.white,
                         onSaved: (newValue) => _diagnosis = newValue!,
                       ),
-                      const SizedBox(height: 20.0),
-                      DefaultTextFormField(
-                        label: "Visitation Date",
-                        text: controller.visit_date.value,
-                        obscureText: false,
-                        icon: Icons.date_range_outlined,
-                        fillColor: Colors.white,
-                        maxLines: 1,
-                        onTap: () => controller.pickDate(context),
-                        keyboardInputType: TextInputType.none,
-                        onSaved: (value) => _visitDate = value!,
-                      ),
+                      // const SizedBox(height: 20.0),
+                      // DefaultTextFormField(
+                      //   label: "Visitation Date",
+                      //   text: controller.visit_date.value,
+                      //   obscureText: false,
+                      //   icon: Icons.date_range_outlined,
+                      //   fillColor: Colors.white,
+                      //   maxLines: 1,
+                      //   onTap: () => controller.pickDate(context),
+                      //   keyboardInputType: TextInputType.none,
+                      //   onSaved: (value) => _visitDate = value!,
+                      // ),
                       // const Spacer(),
                       const SizedBox(height: 20.0),
-                      DropdownSearch<String>(
+                      DropdownSearch<MedicineResponse>(
                         mode: Mode.MENU,
-                        items: const ['paracetamol', 'asprin'],
+                        items: controller.medicines,
+                        itemAsString: (MedicineResponse? med) => med!.name!,
                         showSearchBox: true,
                         dropdownSearchDecoration: const InputDecoration(
                             labelText: "Medicine",
+                            fillColor: Colors.white,
+                            filled: true,
                             border: UnderlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15.0)),
                                 borderSide: BorderSide(color: Colors.white))),
-                        onChanged: (value) => controller.name!.value = value!,
-                        validator: Constants.validator,
+                        onChanged: (value) {
+                          controller.medicine!.value = value!.name!;
+                          controller.price!.value = value.price!;
+                        },
+                        validator: Constants.medicineValidator,
                       ),
 
                       const SizedBox(height: 20.0),
@@ -126,11 +154,12 @@ class Prescription extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const DefaultText(
-                            text: "Total: X",
-                            size: 18.0,
-                            color: Constants.secondaryColor,
-                          ),
+                          Obx(() => DefaultText(
+                                text:
+                                    "Total: ${controller.calculateTotal(controller.drugList)}",
+                                size: 18.0,
+                                color: Constants.secondaryColor,
+                              )),
                           DefaultButton(
                               onPressed: () {
                                 controller.populateTable();
