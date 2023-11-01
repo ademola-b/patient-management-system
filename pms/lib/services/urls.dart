@@ -1,4 +1,4 @@
-String baseUrl = 'http://192.168.2.123:8000';
+String baseUrl = 'http://192.168.213.182:8000';
 
 Uri loginUrl = Uri.parse("$baseUrl/api/accounts/login/");
 Uri userUrl = Uri.parse("$baseUrl/api/accounts/user/");
@@ -19,4 +19,8 @@ Uri prescribeDrugUrl = Uri.parse("$baseUrl/api/prescription/");
 
 Uri drugInvoiceUrl(String id) {
   return Uri.parse("$baseUrl/api/drug-prescription/$id/");
+}
+
+Uri visitReportUrl(String? from, String? to) {
+  return Uri.parse("$baseUrl/api/visitation-report/?from=$from&to=$to");
 }

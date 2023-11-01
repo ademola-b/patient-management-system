@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:pms/controllers/payment_controller.dart';
+import 'package:pms/controllers/report_controllers.dart';
 import 'package:pms/models/drug_prescription_response.dart';
 import 'package:pms/models/login_response.dart';
 import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
 import 'package:pms/models/prescription_create_response.dart';
+import 'package:pms/models/visitation_report_response.dart';
 import 'package:pms/services/urls.dart';
 import 'package:http/http.dart' as http;
 import 'package:pms/utils/constants.dart';
@@ -14,6 +16,7 @@ import '../main.dart';
 
 class RemoteServices {
   final controller = Get.put(PaymentController());
+
   static Future<LoginResponse?> login(
       String? username, String? password) async {
     try {
@@ -152,15 +155,11 @@ class RemoteServices {
             'Authorization': "Token ${sharedPreferences.getString('token')}"
           });
 
-      print(response.body);
-      print("response.body");
       if (response.statusCode == 201) {
         Get.showSnackbar(
             Constants.customSnackBar(message: "Prescription Saved", tag: true));
         var data = jsonDecode(response.body);
-        // print(data);
         RemoteServices().controller.prescription_id.value = data['pres_id'];
-        // print("pres: ${RemoteServices().controller.prescription_id.value}");
         return prescriptionCreateResponseFromJson(response.body);
       } else {
         print(jsonDecode(response.body));
@@ -189,7 +188,7 @@ class RemoteServices {
         throw Exception("An error occurred");
       }
     } catch (e) {
-      print(e);
+      // print(e);
       Get.showSnackbar(
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
@@ -215,5 +214,32 @@ class RemoteServices {
       Get.showSnackbar(
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
+  }
+
+  static Future<List<VisitationReportResponse>?> generateVisitReport(
+      {String? from, String? to}) async {
+    final reportController = Get.put(ReportController());
+
+    try {
+      http.Response response = await http.get(
+          Uri.parse("$baseUrl/api/visitation-report/?from=$from&to=$to"),
+          headers: {
+            'Authorization': "Token ${sharedPreferences.getString('token')}"
+          });
+
+      if (response.statusCode == 200) {
+        // print(response.body);
+
+        return visitationReportResponseFromJson(response.body);
+      } else {
+        // print(response.body);
+        throw Exception("Failed to get report");
+      }
+    } catch (e) {
+      print(e);
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+    // return null;
   }
 }

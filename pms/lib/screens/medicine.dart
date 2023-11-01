@@ -107,7 +107,6 @@ class Medicine extends StatelessWidget {
                                               width: size.width,
                                               child: DefaultButton(
                                                   onPressed: () {
-                                                    // controller.isClicked.value = true;
                                                     _addDrug();
                                                   },
                                                   textSize: 18,

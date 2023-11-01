@@ -9,7 +9,7 @@ from rest_framework.generics import (
 from . models import Patient, Medicine, DrugPrescribed, Prescription
 from . serializers import (PatientSerializer, DrugPrescribedSerializer,
                            MedicineSerializer, PrescriptionSerializer,
-                           FullDrugPrescribedSerializer)
+                           FullPrescriptionSerializer, FullDrugPrescribedSerializer)
 # Create your views here.
 
 class PatientView(ListCreateAPIView):
@@ -36,17 +36,6 @@ class DrugPrescribeView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = DrugPrescribed.objects.all()
     serializer_class = FullDrugPrescribedSerializer
-
-    # def create(self, request):
-    #     data = request.data
-    #     print(f"data:{data}")
-    #     prescription_data = data.pop('prescription')
-
-    #     print(f"pres data:{prescription_data}")
-    #     serializer = DrugPrescribedSerializer(data=data, many=True)
-    #     prescribe = Prescription.objects.create(
-            
-    #     )
 
 
 class GetDrugPrescriptionView(ListAPIView):
@@ -101,4 +90,21 @@ class PrescriptionModifyView(RetrieveUpdateDestroyAPIView):
     queryset = Prescription.objects.all()
     serializer_class = PrescriptionSerializer
 
-    
+
+class GenerateVisitationReport(ListAPIView):
+    queryset = Prescription.objects.all()
+    # queryset = DrugPrescribed.objects.all()
+    serializer_class = FullPrescriptionSerializer
+    # serializer_class = FullDrugPrescribedSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        from_date = self.request.query_params.get('from')
+        to_date = self.request.query_params.get('to')
+
+        if self.request.user.is_authenticated:
+            return Prescription.objects.filter(date__range = (from_date, to_date))
+            return DrugPrescribed.objects.filter(prescription__date__range = (from_date, to_date))
+        else:
+            return Prescription.objects.none()
+            # return DrugPrescribed.objects.none()
