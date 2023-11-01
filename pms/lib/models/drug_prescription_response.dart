@@ -84,11 +84,13 @@ class Prescription {
   Patient? patient;
   DateTime? date;
   bool? paymentMade;
+  String? diagnosis;
 
   Prescription({
     this.presId,
     this.total,
     this.patient,
+    this.diagnosis,
     this.date,
     this.paymentMade,
   });
@@ -96,6 +98,7 @@ class Prescription {
   factory Prescription.fromJson(Map<String, dynamic> json) => Prescription(
         presId: json["pres_id"],
         total: json["total"],
+        diagnosis: json["diagnosis"],
         patient:
             json["patient"] == null ? null : Patient.fromJson(json["patient"]),
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
@@ -105,6 +108,7 @@ class Prescription {
   Map<String, dynamic> toJson() => {
         "pres_id": presId,
         "total": total,
+        "diagnosis": diagnosis,
         "patient": patient?.toJson(),
         "date":
             "${date!.year.toString().padLeft(4, '0')}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}",

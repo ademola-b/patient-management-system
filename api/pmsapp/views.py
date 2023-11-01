@@ -67,6 +67,7 @@ class PrescriptionView(ListCreateAPIView):
 
     def post(self, request):
         data = request.data
+        print(f"data: {data}")
         # drug_prescribed_data = data.pop('drug_prescribed')
         drug_prescribed_data = data.pop('drug_prescribed', [])
 

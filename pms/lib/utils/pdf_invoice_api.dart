@@ -5,6 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:pms/models/invoice.dart';
 import 'package:pms/models/patient_list_response.dart';
+import 'package:pms/models/prescription_create_response.dart';
 import 'package:pms/services/urls.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/pdf_api.dart';
@@ -16,7 +17,9 @@ class PdfInvoiceApi {
     pdf.addPage(MultiPage(
       build: (context) => [
         buildHeader(invoice),
-        SizedBox(height: 3 * PdfPageFormat.cm),
+        SizedBox(height: 1 * PdfPageFormat.cm),
+        buildDiagnosis(invoice.diagnosis),
+        SizedBox(height: 2 * PdfPageFormat.cm),
         buildTitle(invoice),
         buildInvoice(invoice),
         Divider(),
@@ -67,8 +70,14 @@ class PdfInvoiceApi {
         ],
       );
 
+  static Widget buildDiagnosis(String? diagnosis) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Diagnosis: ${diagnosis!}"),
+        ],
+      );
   static Widget buildInvoiceInfo(InvoiceInfo info) {
-    final paymentTerms = '${info.dueDate.difference(info.date).inDays} days';
+    // final paymentTerms = '${info.dueDate.difference(info.date).inDays} days';
     final titles = <String>[
       // 'Invoice Number:',
       '',

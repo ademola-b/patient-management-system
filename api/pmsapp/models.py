@@ -27,6 +27,7 @@ class Prescription(models.Model):
     pres_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, unique=True)
     date = models.DateField(auto_now_add=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    diagnosis = models.CharField(max_length=100, null=True, blank=True)
     total = models.FloatField()
     payment_made = models.BooleanField(default=False)
 

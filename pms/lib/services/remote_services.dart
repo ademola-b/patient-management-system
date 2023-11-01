@@ -84,6 +84,26 @@ class RemoteServices {
     }
   }
 
+  static Future<MedicineResponse?> addMedicine(
+      {String? name, double? price}) async {
+    try {
+      http.Response response = await http.post(medicineListUrl,
+          body: jsonEncode({'name': name, 'price': price}),
+          headers: {
+            'content-type': 'application/json; charset=UTF-8',
+            'Authorization': "Token ${sharedPreferences.getString('token')}"
+          });
+      if (response.statusCode == 201) {
+        Get.showSnackbar(Constants.customSnackBar(
+            message: "Drug Added Successfully", tag: true));
+        Get.close(1);
+      } else {}
+    } catch (e) {
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
   static Future<List<MedicineResponse>?>? medicineList() async {
     try {
       http.Response response = await http.get(medicineListUrl, headers: {
@@ -117,29 +137,38 @@ class RemoteServices {
   static Future<PrescriptionCreateResponse?> prescribeDrugs(
       {required List<Map<String, dynamic>>? drugsPrescribe,
       required String patient,
-      bool? payment}) async {
+      bool? payment,
+      required String diagnosis}) async {
     try {
       http.Response response = await http.post(prescribeDrugUrl,
-          body: jsonEncode(
-              {'patient': patient, 'drug_prescribed': drugsPrescribe}),
+          body: jsonEncode({
+            'patient': patient,
+            'drug_prescribed': drugsPrescribe,
+            'diagnosis': diagnosis,
+            'payment_made': true
+          }),
           headers: {
             'content-type': 'application/json; charset=UTF-8',
             'Authorization': "Token ${sharedPreferences.getString('token')}"
           });
+
+      print(response.body);
+      print("response.body");
       if (response.statusCode == 201) {
         Get.showSnackbar(
             Constants.customSnackBar(message: "Prescription Saved", tag: true));
         var data = jsonDecode(response.body);
-        print(data);
+        // print(data);
         RemoteServices().controller.prescription_id.value = data['pres_id'];
-        print("pres: ${RemoteServices().controller.prescription_id.value}");
+        // print("pres: ${RemoteServices().controller.prescription_id.value}");
         return prescriptionCreateResponseFromJson(response.body);
       } else {
+        print(jsonDecode(response.body));
         throw Exception("An error occurred");
       }
     } catch (e) {
-      Get.showSnackbar(
-          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+      // Get.showSnackbar(
+      //     Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
   }
 

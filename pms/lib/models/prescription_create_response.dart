@@ -11,6 +11,7 @@ String prescriptionCreateResponseToJson(PrescriptionCreateResponse data) => json
 class PrescriptionCreateResponse {
     String? presId;
     DateTime? date;
+    String? diagnosis;
     int? total;
     bool? paymentMade;
     String? patient;
@@ -18,6 +19,7 @@ class PrescriptionCreateResponse {
     PrescriptionCreateResponse({
         this.presId,
         this.date,
+        this.diagnosis,
         this.total,
         this.paymentMade,
         this.patient,
@@ -26,6 +28,7 @@ class PrescriptionCreateResponse {
     factory PrescriptionCreateResponse.fromJson(Map<String, dynamic> json) => PrescriptionCreateResponse(
         presId: json["pres_id"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
+        diagnosis: json["diagnosis"],
         total: json["total"],
         paymentMade: json["payment_made"],
         patient: json["patient"],
@@ -34,6 +37,7 @@ class PrescriptionCreateResponse {
     Map<String, dynamic> toJson() => {
         "pres_id": presId,
         "date": "${date!.year.toString().padLeft(4, '0')}-${date!.month.toString().padLeft(2, '0')}-${date!.day.toString().padLeft(2, '0')}",
+        "diagnosis": diagnosis,
         "total": total,
         "payment_made": paymentMade,
         "patient": patient,

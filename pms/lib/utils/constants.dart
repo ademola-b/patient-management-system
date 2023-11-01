@@ -114,6 +114,7 @@ class Constants {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (builder) {
         return Container(
           height: size.height / 2.5,
@@ -124,9 +125,10 @@ class Constants {
             ),
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Form(
                   key: _form,

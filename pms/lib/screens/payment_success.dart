@@ -26,7 +26,7 @@ class PaymentSuccessful extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // print(data);
-    print("drug: ${controller.drugInvoice.value}");
+    // print("drug: ${controller.drugInvoice.value}");
     return SafeArea(
         child: Scaffold(
       backgroundColor: Constants.backgroundColor,
@@ -79,11 +79,14 @@ class PaymentSuccessful extends StatelessWidget {
                         name: "${ites![0].prescription!.patient!.name}",
                         address: "${ites[0].prescription!.patient!.address}"),
                     items: controller.drugInvoice.value,
+                    diagnosis:
+                        controller.drugInvoice[0].prescription!.diagnosis,
                   );
 
                   final pdfFile = await PdfInvoiceApi.generate(invoice);
                   PdfApi.openFile(pdfFile);
                   print("generated");
+                  // Constants.dialogBox(context)
                 },
                 child: const DefaultText(
                   color: Constants.primaryColor,

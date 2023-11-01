@@ -16,6 +16,7 @@ class PrescriptionController extends GetxController {
   RxString? patient = ''.obs;
   RxString? medicineId = ''.obs;
   RxDouble? price = 0.0.obs;
+  Rx<TextEditingController> diagnosis = TextEditingController().obs;
   Rx<TextEditingController> qty = TextEditingController().obs;
   Rx<TextEditingController> dosage = TextEditingController().obs;
   RxString dropdownvalue = ''.obs;
@@ -72,6 +73,7 @@ class PrescriptionController extends GetxController {
         'invoice_number': response.reference,
         'drug_prescribed': drugPrescribed,
         'patientId': patient!.value,
+        'diagnosis': diagnosis.value.text,
       });
     } else {
       print(response.message);

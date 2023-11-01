@@ -14,12 +14,13 @@ class Medicine extends StatelessWidget {
   final _form = GlobalKey<FormState>();
   late String _name, _price;
 
-  _addDrug() {
+  _addDrug() async {
     var isValid = _form.currentState!.validate();
     if (!isValid) return;
     _form.currentState!.save();
 
-    print("Data collected: $_name, $_price");
+    await RemoteServices.addMedicine(name: _name, price: double.parse(_price));
+    // print("Data collected: $_name, $_price");
   }
 
   @override

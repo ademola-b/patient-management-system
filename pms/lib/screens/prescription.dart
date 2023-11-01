@@ -85,6 +85,7 @@ class Prescription extends StatelessWidget {
                       ),
                       const SizedBox(height: 20.0),
                       DefaultTextFormField(
+                        text: controller.diagnosis.value,
                         obscureText: false,
                         hintText: "Diagnosis",
                         label: "Diagnosis",

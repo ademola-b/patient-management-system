@@ -1,6 +1,7 @@
 // import 'package:generate_pdf_invoice_example/model/customer.dart';
 import 'package:pms/models/drug_prescription_response.dart';
 import 'package:pms/models/patient_list_response.dart';
+import 'package:pms/models/prescription_create_response.dart';
 // import 'package:generate_pdf_invoice_example/model/supplier.dart';
 
 class Invoice {
@@ -8,10 +9,11 @@ class Invoice {
   // final PatientListResponse supplier;
   final PatientListResponse customer;
   final List<DrugPrescriptionResponse> items;
+  final String? diagnosis;
 
   const Invoice({
     required this.info,
-    // required this.supplier,
+    required this.diagnosis,
     required this.customer,
     required this.items,
   });

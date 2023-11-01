@@ -22,6 +22,7 @@ class PaymentController extends GetxController {
     await RemoteServices.prescribeDrugs(
         drugsPrescribe: data['drug_prescribed'],
         patient: data['patientId'],
+        diagnosis: data['diagnosis'],
         payment: true);
 
     await RemoteServices.getDrugInvoice();
