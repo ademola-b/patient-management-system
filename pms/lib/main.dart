@@ -8,7 +8,10 @@ import 'package:pms/screens/patient_history.dart';
 import 'package:pms/screens/patients.dart';
 import 'package:pms/screens/payment_success.dart';
 import 'package:pms/screens/prescription.dart';
+import 'package:pms/screens/scanner/qr_scanner.dart';
+import 'package:pms/screens/scanner/result.dart';
 import 'package:pms/screens/splash.dart';
+import 'package:pms/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late SharedPreferences sharedPreferences;
@@ -40,6 +43,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/medicine', page: () => Medicine()),
         GetPage(name: '/prescription', page: () => Prescription()),
         GetPage(name: '/payment_success', page: () => PaymentSuccessful()),
+        GetPage(name: '/scan', page: () => Scan()),
+        GetPage(name: '/result', page: () => ScannedQR()),
       ],
     );
   }

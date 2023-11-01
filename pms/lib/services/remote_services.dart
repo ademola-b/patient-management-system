@@ -194,4 +194,26 @@ class RemoteServices {
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
   }
+
+  static Future<List<DrugPrescriptionResponse>?>? getScannedDrugInvoice(
+      endPoint) async {
+    try {
+      http.Response response = await http.get(Uri.parse("$endPoint"), headers: {
+        'Authorization': "Token ${sharedPreferences.getString('token')}"
+      });
+      print("end: $endPoint");
+      if (response.statusCode == 200) {
+        print("res-${response.body}");
+
+        return drugPrescriptionResponseFromJson(response.body);
+      } else {
+        print(response.body);
+        throw Exception("An error occurred");
+      }
+    } catch (e) {
+      print(e);
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
 }

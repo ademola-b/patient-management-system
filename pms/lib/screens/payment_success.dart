@@ -83,10 +83,17 @@ class PaymentSuccessful extends StatelessWidget {
                         controller.drugInvoice[0].prescription!.diagnosis,
                   );
 
-                  final pdfFile = await PdfInvoiceApi.generate(invoice);
+                  final pdfFile = await PdfInvoiceApi.generate(
+                      invoice, controller.prescription_id.value);
                   PdfApi.openFile(pdfFile);
                   print("generated");
-                  // Constants.dialogBox(context)
+                  Constants.dialogBox(
+                    context,
+                    text: "Invoice Generated",
+                    color: Colors.white,
+                    textColor: Constants.secondaryColor,
+                    // actions: []
+                  );
                 },
                 child: const DefaultText(
                   color: Constants.primaryColor,

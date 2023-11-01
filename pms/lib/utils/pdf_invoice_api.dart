@@ -11,12 +11,12 @@ import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/pdf_api.dart';
 
 class PdfInvoiceApi {
-  static Future<File> generate(Invoice invoice) async {
+  static Future<File> generate(Invoice invoice, String prescription) async {
     final pdf = Document();
 
     pdf.addPage(MultiPage(
       build: (context) => [
-        buildHeader(invoice),
+        buildHeader(invoice, prescription),
         SizedBox(height: 1 * PdfPageFormat.cm),
         buildDiagnosis(invoice.diagnosis),
         SizedBox(height: 2 * PdfPageFormat.cm),
@@ -31,7 +31,7 @@ class PdfInvoiceApi {
     return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
   }
 
-  static Widget buildHeader(Invoice invoice) => Column(
+  static Widget buildHeader(Invoice invoice, String prescription) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 1 * PdfPageFormat.cm),
@@ -44,8 +44,7 @@ class PdfInvoiceApi {
                 width: 50,
                 child: BarcodeWidget(
                   barcode: Barcode.qrCode(),
-                  data:
-                      "$baseUrl/api/drug-prescription/c1bcd65b55414cfe8a3aa4d0fd743c36/",
+                  data: "$baseUrl/api/drug-prescription/$prescription/",
                 ),
               ),
             ],

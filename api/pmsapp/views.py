@@ -50,7 +50,7 @@ class DrugPrescribeView(ListCreateAPIView):
 
 
 class GetDrugPrescriptionView(ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     # queryset = DrugPrescribed.objects.all()
     serializer_class = FullDrugPrescribedSerializer
 
@@ -58,8 +58,6 @@ class GetDrugPrescriptionView(ListAPIView):
         return DrugPrescribed.objects.filter(prescription__pres_id=self.kwargs['pk'])
     
     
-
-
 class PrescriptionView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Prescription.objects.all()

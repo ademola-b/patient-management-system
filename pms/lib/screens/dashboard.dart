@@ -61,6 +61,34 @@ class Dashboard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 50.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width / 1.5,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(15.0)),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        side: BorderSide(color: Constants.primaryColor),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    Get.toNamed('/scan');
+                  },
+                  child: const DefaultText(
+                    color: Constants.primaryColor,
+                    text: "Scan Receipt",
+                    size: 18,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
