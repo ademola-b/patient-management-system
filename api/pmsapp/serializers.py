@@ -37,6 +37,7 @@ class DrugPrescribedSerializer(serializers.ModelSerializer):
         model = DrugPrescribed
         fields = "__all__" 
 
+
 class PrescriptionSerializer(serializers.ModelSerializer):
     drug_prescribed = DrugPrescribedSerializer(many=True, required=False)
     total = serializers.CharField(required=False)
@@ -44,4 +45,18 @@ class PrescriptionSerializer(serializers.ModelSerializer):
         model = Prescription
         fields = "__all__"
 
+class FullPrescriptionSerializer(serializers.ModelSerializer):
+    drug_prescribed = DrugPrescribedSerializer(many=True, required=False)
+    total = serializers.CharField(required=False)
+    patient = PatientSerializer()
+    class Meta:
+        model = Prescription
+        fields = "__all__"
 
+
+class FullDrugPrescribedSerializer(serializers.ModelSerializer):
+    prescription = FullPrescriptionSerializer()
+    drug = MedicineSerializer()
+    class Meta:
+        model = DrugPrescribed
+        fields = "__all__" 

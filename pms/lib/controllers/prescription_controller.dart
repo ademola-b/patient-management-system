@@ -56,7 +56,7 @@ class PrescriptionController extends GetxController {
 
   void makePayment(context) async {
     Charge charge = Charge()
-      ..amount = 1000
+      ..amount = calculateTotal(drugList).toInt() * 100
       ..reference = 'ref_${DateTime.now()}'
       ..email = 'bellofaisol@gmail.com'
       // ..accessCode = '+234'
@@ -69,8 +69,9 @@ class PrescriptionController extends GetxController {
       message.value = 'Payment was successful. Ref: ${response.reference}';
       Get.toNamed('/payment_success', arguments: {
         'message': message.value,
+        'invoice_number': response.reference,
         'drug_prescribed': drugPrescribed,
-        'patientId': patient!.value
+        'patientId': patient!.value,
       });
     } else {
       print(response.message);
@@ -127,7 +128,7 @@ class PrescriptionController extends GetxController {
     };
 
     drugPrescribed.add(item);
-    print(drugPrescribed);
+    // print(drugPrescribed);
   }
 
   double calculateTotal(RxList drugList) {

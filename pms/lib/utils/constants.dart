@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
 import 'package:pms/utils/defaultButton.dart';
@@ -13,6 +17,9 @@ class Constants {
   static const Color backgroundColor = Color(0xFFF2F5FF);
   static const Color secondaryColor = Color(0xFF2C3D8F);
   static const Color containerColor = Color.fromARGB(255, 189, 162, 122);
+
+  static formatPrice(double price) => '=N= ${price.toStringAsFixed(2)}';
+  static formatDate(DateTime date) => DateFormat.yMd().format(date);
 
   static String? validator(String? value) {
     if (value == null || value.isEmpty) {
@@ -180,5 +187,24 @@ class Constants {
 
       return DefaultText(text: action, color: Colors.white, size: 18.0);
     }
+  }
+
+  static Future<String> getDownloadPath() async {
+    Directory? dir;
+    // get the download folder
+    try {
+      Platform.isIOS
+          ? dir = await getApplicationDocumentsDirectory()
+          : dir = Directory('/storage/emulated/0/Download');
+      // check external storage if download is not gotten
+      if (!await dir.exists()) dir = await getExternalStorageDirectory();
+    } catch (err) {
+      Get.showSnackbar(Constants.customSnackBar(
+          message:
+              "Can't get download folder, check if storage permission is enabled",
+          tag: false));
+    }
+
+    return dir!.path;
   }
 }

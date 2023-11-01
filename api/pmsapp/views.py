@@ -1,14 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import (
-    CreateAPIView,
+    CreateAPIView, ListAPIView,
     ListCreateAPIView, RetrieveUpdateDestroyAPIView)
 
 from . models import Patient, Medicine, DrugPrescribed, Prescription
 from . serializers import (PatientSerializer, DrugPrescribedSerializer,
-                           MedicineSerializer, PrescriptionSerializer)
+                           MedicineSerializer, PrescriptionSerializer,
+                           FullDrugPrescribedSerializer)
 # Create your views here.
 
 class PatientView(ListCreateAPIView):
@@ -31,36 +32,32 @@ class MedicineUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
 
-class DrugPrescribeView(CreateAPIView):
+class DrugPrescribeView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Medicine.objects.all()
-    serializer_class = DrugPrescribedSerializer
+    queryset = DrugPrescribed.objects.all()
+    serializer_class = FullDrugPrescribedSerializer
 
-    def create(self, request):
-        data = request.data
-        print(f"data:{data}")
-        prescription_data = data.pop('prescription')
-
-        print(f"pres data:{prescription_data}")
-        serializer = DrugPrescribedSerializer(data=data, many=True)
-        prescribe = Prescription.objects.create(
-            
-        )
-
-      
-
-
-    # def post(self, request):
+    # def create(self, request):
     #     data = request.data
-    #     serializer = DrugPrescribedSerializer(data = data, many=True)
-    #     if serializer.is_valid():
-    #         for d in data:
-    #             drugpres = DrugPrescribed.objects.create(
-    #                 drug = Medicine.objects.get(medicine_id = d['drug']),
-    #                 qty = d['qty'],
-    #                 dosage = d['dosage'],
-    #                 total = d['total'],
-    #             )
+    #     print(f"data:{data}")
+    #     prescription_data = data.pop('prescription')
+
+    #     print(f"pres data:{prescription_data}")
+    #     serializer = DrugPrescribedSerializer(data=data, many=True)
+    #     prescribe = Prescription.objects.create(
+            
+    #     )
+
+
+class GetDrugPrescriptionView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    # queryset = DrugPrescribed.objects.all()
+    serializer_class = FullDrugPrescribedSerializer
+
+    def get_queryset(self):
+        return DrugPrescribed.objects.filter(prescription__pres_id=self.kwargs['pk'])
+    
+    
 
 
 class PrescriptionView(ListCreateAPIView):
@@ -91,6 +88,7 @@ class PrescriptionView(ListCreateAPIView):
                     return Response(dp_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 
                 prescription_instance.total = total
+                prescription_instance.payment_made = True
                 prescription_instance.save()
 
 

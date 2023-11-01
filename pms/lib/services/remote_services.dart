@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:pms/controllers/payment_controller.dart';
+import 'package:pms/models/drug_prescription_response.dart';
 import 'package:pms/models/login_response.dart';
 import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
@@ -11,6 +13,7 @@ import 'package:pms/utils/constants.dart';
 import '../main.dart';
 
 class RemoteServices {
+  final controller = Get.put(PaymentController());
   static Future<LoginResponse?> login(
       String? username, String? password) async {
     try {
@@ -113,7 +116,8 @@ class RemoteServices {
 
   static Future<PrescriptionCreateResponse?> prescribeDrugs(
       {required List<Map<String, dynamic>>? drugsPrescribe,
-      required String patient}) async {
+      required String patient,
+      bool? payment}) async {
     try {
       http.Response response = await http.post(prescribeDrugUrl,
           body: jsonEncode(
@@ -125,11 +129,38 @@ class RemoteServices {
       if (response.statusCode == 201) {
         Get.showSnackbar(
             Constants.customSnackBar(message: "Prescription Saved", tag: true));
+        var data = jsonDecode(response.body);
+        print(data);
+        RemoteServices().controller.prescription_id.value = data['pres_id'];
+        print("pres: ${RemoteServices().controller.prescription_id.value}");
+        return prescriptionCreateResponseFromJson(response.body);
       } else {
-        print(jsonDecode(response.body));
         throw Exception("An error occurred");
       }
     } catch (e) {
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<List<DrugPrescriptionResponse>?>? getDrugInvoice() async {
+    try {
+      http.Response response = await http.get(
+          drugInvoiceUrl(RemoteServices().controller.prescription_id.value),
+          headers: {
+            'Authorization': "Token ${sharedPreferences.getString('token')}"
+          });
+      if (response.statusCode == 200) {
+        // print(response.body);
+        RemoteServices().controller.drugInvoice.value =
+            drugPrescriptionResponseFromJson(response.body);
+        return drugPrescriptionResponseFromJson(response.body);
+      } else {
+        print(response.body);
+        throw Exception("An error occurred");
+      }
+    } catch (e) {
+      print(e);
       Get.showSnackbar(
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
