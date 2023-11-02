@@ -5,6 +5,12 @@ import 'package:pms/models/patient_list_response.dart';
 import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultText.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as Path;
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+
 
 class PatientController extends GetxController {
   var isClicked = false.obs;
@@ -18,6 +24,7 @@ class PatientController extends GetxController {
   Rx<TextEditingController> dob = TextEditingController().obs;
   Rx<TextEditingController> phone = TextEditingController().obs;
   Rx<TextEditingController> gender = TextEditingController().obs;
+var img = File('').obs;
 
   var data = Get.arguments;
 
@@ -75,5 +82,25 @@ class PatientController extends GetxController {
 
   cir1() {
     return Constants.circ(isClicked, "Submit");
+  }
+
+  Future getImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+      final imgPerm = await saveImagePermanently(image.path);
+      img.value = imgPerm;
+    } catch (e) {
+      Get.showSnackbar(Constants.customSnackBar(
+          message: "An error occurred: $e", tag: false));
+    }
+  }
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = Path.basename(imagePath);
+    final image = File("${directory.path}/$name");
+
+    return File(imagePath).copy(image.path);
   }
 }

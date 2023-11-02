@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -84,16 +86,22 @@ class PaymentSuccessful extends StatelessWidget {
                   );
 
                   final pdfFile = await PdfInvoiceApi.generate(
-                      invoice, controller.prescription_id.value);
+                      invoice, controller.prescription_id.value, controller.drugInvoice[0].prescription!.patient!.name);
                   PdfApi.openFile(pdfFile);
-                  print("generated");
-                  Constants.dialogBox(
-                    context,
-                    text: "Invoice Generated",
-                    color: Colors.white,
-                    textColor: Constants.secondaryColor,
-                    // actions: []
-                  );
+                  // print("generated");
+                  Constants.dialogBox(context,
+                      text: "Invoice Generated",
+                      color: Colors.white,
+                      textColor: Constants.secondaryColor,
+                      actions: [
+                        TextButton(
+                            onPressed: () {
+                              Get.close(2);
+                            },
+                            child: const DefaultText(
+                              text: "okay",
+                            ))
+                      ]);
                 },
                 child: const DefaultText(
                   color: Constants.primaryColor,

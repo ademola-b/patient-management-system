@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pms/controllers/patient_controller.dart';
+import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultDropDown.dart';
@@ -24,7 +26,7 @@ class AddPatient extends StatelessWidget {
   TextEditingController regNo = TextEditingController();
 
   final _form = GlobalKey<FormState>();
-  _submit() {
+  _submit() async {
     controller.isClicked.value = true;
     var isValid = _form.currentState!.validate();
     if (!isValid) {
@@ -34,6 +36,8 @@ class AddPatient extends StatelessWidget {
 
     _form.currentState!.save();
     print("data collected: $_name, $_address, $_dob, $_phone, $_gender");
+    await RemoteServices.addPatient(
+        _name, _address, _phone, _gender, _dob, controller.img.value);
     controller.isClicked.value = false;
   }
 
@@ -68,6 +72,22 @@ class AddPatient extends StatelessWidget {
                 const DefaultText(
                     text: "Fill below form to add a patient", size: 18.0),
                 const SizedBox(height: 30),
+                Obx(() => controller.img.value != null
+                    ? Image.asset("assets/images/default.jpg",
+                        width: 120, height: 120)
+                    : Image.file(controller.img.value,
+                        width: 150, height: 150)),
+                GestureDetector(
+                  onTap: () {
+                    controller.getImage(ImageSource.gallery);
+                    // Navigator.pop(context);
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.image_outlined, size: 30.0),
+                    ],
+                  ),
+                ),
                 Form(
                     key: _form,
                     child: Column(

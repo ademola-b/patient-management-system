@@ -11,7 +11,7 @@ import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/pdf_api.dart';
 
 class PdfInvoiceApi {
-  static Future<File> generate(Invoice invoice, String prescription) async {
+  static Future<File> generate(Invoice invoice, String prescription, String? file_name) async {
     final pdf = Document();
 
     pdf.addPage(MultiPage(
@@ -28,7 +28,7 @@ class PdfInvoiceApi {
       // footer: (context) => buildFooter(invoice),
     ));
 
-    return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+    return PdfApi.saveDocument(name: '$file_name-invoice.pdf', pdf: pdf);
   }
 
   static Widget buildHeader(Invoice invoice, String prescription) => Column(
@@ -84,7 +84,8 @@ class PdfInvoiceApi {
     ];
     final data = <String>[
       info.number,
-      Constants.formatDate(info.date),
+      Constants.formatDate(info.date!),
+      // Constants.formatDate(info.date),
     ];
 
     return Column(

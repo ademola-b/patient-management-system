@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pms/controllers/payment_controller.dart';
 import 'package:pms/controllers/report_controllers.dart';
@@ -11,6 +13,7 @@ import 'package:pms/models/visitation_report_response.dart';
 import 'package:pms/services/urls.dart';
 import 'package:http/http.dart' as http;
 import 'package:pms/utils/constants.dart';
+import 'package:pms/utils/defaultText.dart';
 
 import '../main.dart';
 
@@ -65,6 +68,59 @@ class RemoteServices {
         throw Exception("Failed to get patients");
       }
     } catch (e) {
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<PatientListResponse?> addPatient(String? name, String? address,
+      String? phone, String? gender, String? dob, File? picture) async {
+    try {
+      var headers = {
+        'Authorization': 'Token ${sharedPreferences.getString('token')}',
+        "content-type": "multipart/form-data"
+      };
+      var request = http.MultipartRequest('POST', patientListUrl);
+      request.fields.addAll({
+        'name': name.toString(),
+        'address': address.toString(),
+        'dob': dob.toString(),
+        'phone': phone.toString(),
+        'gender': gender.toString(),
+      });
+      request.files
+          .add(await http.MultipartFile.fromPath('picture', picture!.path));
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 201) {
+        Get.defaultDialog(
+            title: "",
+            content: Column(
+              children: const [
+                Icon(
+                  Icons.check_circle,
+                  color: Constants.secondaryColor,
+                  size: 120,
+                ),
+                DefaultText(text: "Patient Successfully Added")
+              ],
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () => Get.close(0),
+                  child: const DefaultText(
+                    text: "Okay",
+                    size: 18.0,
+                  ))
+            ]);
+      } else {
+        print(await response.stream.bytesToString());
+        // throw Exception("An error occurred: ");
+      }
+    } catch (e) {
+      print(e);
       Get.showSnackbar(
           Constants.customSnackBar(message: "Server Error: $e", tag: false));
     }
@@ -182,6 +238,48 @@ class RemoteServices {
         // print(response.body);
         RemoteServices().controller.drugInvoice.value =
             drugPrescriptionResponseFromJson(response.body);
+        return drugPrescriptionResponseFromJson(response.body);
+      } else {
+        print(response.body);
+        throw Exception("An error occurred");
+      }
+    } catch (e) {
+      // print(e);
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<List<DrugPrescriptionResponse>?>? getPrescribedDrugInvoice(
+      String id) async {
+    try {
+      http.Response response = await http.get(drugInvoiceUrl(id), headers: {
+        'Authorization': "Token ${sharedPreferences.getString('token')}"
+      });
+      if (response.statusCode == 200) {
+        // print(response.body);
+
+        return drugPrescriptionResponseFromJson(response.body);
+      } else {
+        print(response.body);
+        throw Exception("An error occurred");
+      }
+    } catch (e) {
+      // print(e);
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<List<DrugPrescriptionResponse>?>? getPrescribedData(
+      String? id) async {
+    try {
+      http.Response response = await http.get(prescribedDrugUrl(id), headers: {
+        'Authorization': "Token ${sharedPreferences.getString('token')}"
+      });
+      if (response.statusCode == 200) {
+        // print(response.body);
+
         return drugPrescriptionResponseFromJson(response.body);
       } else {
         print(response.body);

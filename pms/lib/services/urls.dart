@@ -15,7 +15,7 @@ Uri medicineDetailUrl(String id) {
 }
 
 Uri prescribeDrugUrl = Uri.parse("$baseUrl/api/prescription/");
-// Uri drugInvoiceUrl = Uri.parse("$baseUrl/api/drug-prescription/c1bcd65b55414cfe8a3aa4d0fd743c36/");
+
 
 Uri drugInvoiceUrl(String id) {
   return Uri.parse("$baseUrl/api/drug-prescription/$id/");
@@ -24,3 +24,8 @@ Uri drugInvoiceUrl(String id) {
 Uri visitReportUrl(String? from, String? to) {
   return Uri.parse("$baseUrl/api/visitation-report/?from=$from&to=$to");
 }
+
+Uri prescribedDrugUrl(String? id) {
+  return Uri.parse("$baseUrl/api/drug-prescription/$id/");
+}
+

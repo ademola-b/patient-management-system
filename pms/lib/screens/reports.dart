@@ -47,6 +47,23 @@ class Report extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           child: Column(
             children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.arrow_back_ios,
+                        color: Constants.secondaryColor),
+                    iconSize: 25,
+                  ),
+                  const DefaultText(
+                    text: "Generate Visitations",
+                    size: 20.0,
+                    color: Constants.secondaryColor,
+                  )
+                ],
+              ),
               Form(
                   key: _form,
                   child: Column(
@@ -130,19 +147,20 @@ class Report extends StatelessWidget {
                                                   data[index].date.toString()),
                                           trailing: GestureDetector(
                                             onTap: () {
-                                              Get.toNamed('/login');
+                                              Get.toNamed('/prescribed_drugs',
+                                                  arguments:
+                                                      data[index].presId);
                                             },
                                             child: Container(
                                               padding:
                                                   const EdgeInsets.all(5.0),
                                               decoration: const BoxDecoration(
                                                 color: Constants.primaryColor,
-                                                borderRadius:
-                                                     BorderRadius.all(
-                                                        Radius.circular(30.0)),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(30.0)),
                                               ),
                                               child: const DefaultText(
-                                                text: "view invoice",
+                                                text: "view data",
                                                 size: 12.0,
                                                 color: Constants.altColor,
                                               ),

@@ -145,132 +145,139 @@ class Prescription extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 20.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Obx(() => DefaultText(
-                                text:
-                                    "Total: ${controller.calculateTotal(controller.drugList)}",
-                                size: 18.0,
-                                color: Constants.secondaryColor,
-                              )),
-                          DefaultButton(
-                              onPressed: () {
-                                var isValid = _form.currentState!.validate();
-                                if (!isValid) return;
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Obx(() => DefaultText(
+                                  text:
+                                      "Total: ${controller.calculateTotal(controller.drugList)}",
+                                  size: 18.0,
+                                  color: Constants.secondaryColor,
+                                )),
+                            DefaultButton(
+                                onPressed: () {
+                                  var isValid = _form.currentState!.validate();
+                                  if (!isValid) return;
 
-                                _form.currentState!.save();
-                                controller.populateTable();
-                              },
-                              textSize: 15.0,
-                              child: const DefaultText(
-                                text: "Add Drug to List",
-                                size: 15,
-                              ))
-                        ],
+                                  _form.currentState!.save();
+                                  controller.populateTable();
+                                },
+                                textSize: 15.0,
+                                child: const DefaultText(
+                                  text: "Add Drug to List",
+                                  size: 15,
+                                ))
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 20.0),
-                      Obx(() => Table(
-                            border: TableBorder.all(),
-                            children: [
-                              const TableRow(
-                                  decoration: BoxDecoration(
-                                      color: Constants.secondaryColor),
-                                  children: [
-                                    TableCell(
-                                      child: DefaultText(
-                                        text: "Name",
-                                        size: 18.0,
-                                        color: Constants.altColor,
-                                        align: TextAlign.center,
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: DefaultText(
-                                        text: "QTY",
-                                        size: 18.0,
-                                        color: Constants.altColor,
-                                        align: TextAlign.center,
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: DefaultText(
-                                        text: "Price",
-                                        size: 18.0,
-                                        color: Constants.altColor,
-                                        align: TextAlign.center,
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: DefaultText(
-                                        text: "Total",
-                                        size: 18.0,
-                                        color: Constants.altColor,
-                                        align: TextAlign.center,
-                                      ),
-                                    ),
-                                    TableCell(
-                                      child: DefaultText(
-                                        text: "Action",
-                                        size: 18.0,
-                                        color: Constants.altColor,
-                                        align: TextAlign.center,
-                                      ),
-                                    ),
-                                  ]),
-                              for (var index = 0;
-                                  index < controller.drugList.length;
-                                  index++)
-                                TableRow(
-                                  children: [
-                                    TableCell(
+                      Obx(() => Expanded(
+                            child: Table(
+                              border: TableBorder.all(),
+                              children: [
+                                const TableRow(
+                                    decoration: BoxDecoration(
+                                        color: Constants.secondaryColor),
+                                    children: [
+                                      TableCell(
                                         child: DefaultText(
-                                            text: controller
-                                                .drugList[index].name)),
-                                    TableCell(
+                                          text: "Name",
+                                          size: 18.0,
+                                          color: Constants.altColor,
+                                          align: TextAlign.center,
+                                        ),
+                                      ),
+                                      TableCell(
                                         child: DefaultText(
-                                            text: controller
-                                                .drugList[index].qty)),
-                                    TableCell(
+                                          text: "QTY",
+                                          size: 18.0,
+                                          color: Constants.altColor,
+                                          align: TextAlign.center,
+                                        ),
+                                      ),
+                                      TableCell(
                                         child: DefaultText(
-                                            text: controller
-                                                .drugList[index].price
-                                                .toString())),
-                                    TableCell(
+                                          text: "Price",
+                                          size: 18.0,
+                                          color: Constants.altColor,
+                                          align: TextAlign.center,
+                                        ),
+                                      ),
+                                      TableCell(
                                         child: DefaultText(
-                                            text: controller
-                                                .drugList[index].total
-                                                .toString())),
-                                    TableCell(
-                                        child: IconButton(
-                                            onPressed: () {
-                                              removeDrug(
-                                                  index,
-                                                  controller.drugList[index],
-                                                  controller
-                                                      .drugList[index].drugId);
-                                              print(controller.drugList);
-                                              print(controller.drugPrescribed);
-                                            },
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ))),
-                                  ],
-                                ),
-                            ],
+                                          text: "Total",
+                                          size: 18.0,
+                                          color: Constants.altColor,
+                                          align: TextAlign.center,
+                                        ),
+                                      ),
+                                      TableCell(
+                                        child: DefaultText(
+                                          text: "Action",
+                                          size: 18.0,
+                                          color: Constants.altColor,
+                                          align: TextAlign.center,
+                                        ),
+                                      ),
+                                    ]),
+                                for (var index = 0;
+                                    index < controller.drugList.length;
+                                    index++)
+                                  TableRow(
+                                    children: [
+                                      TableCell(
+                                          child: DefaultText(
+                                              text: controller
+                                                  .drugList[index].name)),
+                                      TableCell(
+                                          child: DefaultText(
+                                              text: controller
+                                                  .drugList[index].qty)),
+                                      TableCell(
+                                          child: DefaultText(
+                                              text: controller
+                                                  .drugList[index].price
+                                                  .toString())),
+                                      TableCell(
+                                          child: DefaultText(
+                                              text: controller
+                                                  .drugList[index].total
+                                                  .toString())),
+                                      TableCell(
+                                          child: IconButton(
+                                              onPressed: () {
+                                                removeDrug(
+                                                    index,
+                                                    controller.drugList[index],
+                                                    controller.drugList[index]
+                                                        .drugId);
+                                                // print(controller.drugList);
+                                                // print(
+                                                //     controller.drugPrescribed);
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ))),
+                                    ],
+                                  ),
+                              ],
+                            ),
                           )),
                       const Spacer(),
-                      SizedBox(
-                        width: size.width,
-                        child: Obx(() => DefaultButton(
-                              onPressed: () {
-                                controller.isClicked.value = true;
-                                controller.makePayment(context);
-                              },
-                              textSize: 18,
-                              child: controller.cir(),
-                            )),
+                      Expanded(
+                        child: SizedBox(
+                          width: size.width,
+                          child: Obx(() => DefaultButton(
+                                onPressed: () {
+                                  controller.isClicked.value = true;
+                                  controller.makePayment(context);
+                                },
+                                textSize: 18,
+                                child: controller.cir(),
+                              )),
+                        ),
                       )
                     ],
                   ),

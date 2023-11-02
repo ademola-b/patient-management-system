@@ -2,25 +2,29 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pms/controllers/prescribed_drugs_controller.dart';
+import 'package:pms/models/invoice.dart';
+import 'package:pms/models/patient_list_response.dart';
 
 import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultContainer.dart';
 import 'package:pms/utils/defaultText.dart';
+import 'package:pms/utils/pdf_invoice_api.dart';
 
 class PrescribedDrugs extends StatelessWidget {
   PrescribedDrugs({super.key});
 
-  var data = Get.arguments;
+  var pres_id = Get.arguments;
+  final controller = Get.put(PrescribedDrugControllers());
 
   @override
   Widget build(BuildContext context) {
-    print(data);
     return Scaffold(
         appBar: AppBar(
           title: const DefaultText(
-            text: "Prescribed Drug Info",
+            text: "Prescribed Drugs",
           ),
           centerTitle: true,
         ),
@@ -31,7 +35,7 @@ class PrescribedDrugs extends StatelessWidget {
                 child: Column(
               children: [
                 FutureBuilder(
-                    future: RemoteServices.getScannedDrugInvoice(data),
+                    future: RemoteServices.getPrescribedData(pres_id),
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data!.isEmpty) {
                         return const DefaultText(
@@ -81,11 +85,40 @@ class PrescribedDrugs extends StatelessWidget {
                               color: Constants.secondaryColor,
                             ),
                             const SizedBox(height: 20.0),
-                            DefaultText(
-                              text:
-                                  "Amount Paid: ${data[0].prescription!.total!}",
-                              size: 18.0,
-                              color: Constants.secondaryColor,
+                            Row(
+                              children: [
+                                DefaultButton(
+                                    onPressed: () async {
+                                      final invoice = Invoice(
+                                        info: InvoiceInfo(
+                                            date: controller.prescribedDrug![0]
+                                                .prescription!.date,
+                                            description: "Drug Prescription",
+                                            number: "ref_2023"),
+                                        customer: PatientListResponse(
+                                            name:
+                                                "${controller.prescribedDrug[0].prescription!.patient!.name}",
+                                            address:
+                                                "${controller.prescribedDrug![0].prescription!.patient!.address}"),
+                                        items: controller.prescribedDrug,
+                                        diagnosis: controller.prescribedDrug![0]
+                                            .prescription!.diagnosis,
+                                      );
+
+                                      final pdfFile =
+                                          await PdfInvoiceApi.generate(
+                                              invoice, pres_id, controller.prescribedDrug[0].prescription!.patient!.name);
+                                    },
+                                    child: const DefaultText(
+                                        text: "Generate PDF")),
+                                const Spacer(),
+                                DefaultText(
+                                  text:
+                                      "Amount Paid: ${data[0].prescription!.total!}",
+                                  size: 18.0,
+                                  color: Constants.secondaryColor,
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20.0),
                             ListView.builder(
