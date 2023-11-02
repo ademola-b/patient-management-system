@@ -107,7 +107,32 @@ class PrescribedDrugs extends StatelessWidget {
 
                                       final pdfFile =
                                           await PdfInvoiceApi.generate(
-                                              invoice, pres_id, controller.prescribedDrug[0].prescription!.patient!.name);
+                                              invoice,
+                                              pres_id,
+                                              controller.prescribedDrug[0]
+                                                  .prescription!.patient!.name);
+                                      Get.defaultDialog(
+                                          title: "",
+                                          content: Column(
+                                            children: const [
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Constants.secondaryColor,
+                                                size: 120,
+                                              ),
+                                              DefaultText(
+                                                  text:
+                                                      "Invoice Successfully Generated")
+                                            ],
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () => Get.close(0),
+                                                child: const DefaultText(
+                                                  text: "Okay",
+                                                  size: 18.0,
+                                                ))
+                                          ]);
                                     },
                                     child: const DefaultText(
                                         text: "Generate PDF")),

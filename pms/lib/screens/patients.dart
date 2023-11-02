@@ -22,6 +22,7 @@ class Patients extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -41,12 +42,17 @@ class Patients extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 40.0),
-              const DefaultTextFormField(
-                label: "Search by name",
-                obscureText: false,
-                icon: Icons.search_outlined,
-                fillColor: Colors.white,
-                maxLines: 1,
+              // const DefaultTextFormField(
+              //   label: "Search by name",
+              //   obscureText: false,
+              //   icon: Icons.search_outlined,
+              //   fillColor: Colors.white,
+              //   maxLines: 1,
+              // ),
+              const DefaultText(
+                text: "Below is the list of patient",
+                size: 20,
+                color: Constants.secondaryColor,
               ),
               const SizedBox(height: 50),
               FutureBuilder(

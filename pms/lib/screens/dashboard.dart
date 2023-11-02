@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:pms/main.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/defaultGesture.dart';
 import 'package:pms/utils/defaultText.dart';
@@ -18,6 +19,14 @@ class Dashboard extends StatelessWidget {
         title: const DefaultText(
           text: "Dashboard",
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                sharedPreferences.clear();
+                Get.offAllNamed('/login');
+              },
+              icon: const Icon(Icons.logout))
+        ],
         centerTitle: true,
       ),
       body: Padding(

@@ -27,29 +27,29 @@ class PaymentSuccessful extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(data);
-    // print("drug: ${controller.drugInvoice.value}");
     return SafeArea(
         child: Scaffold(
       backgroundColor: Constants.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 100.0),
             const SizedBox(
-              height: 50,
-              width: 50,
-              child: CheckMark(
-                active: true,
-                curve: Curves.decelerate,
-                duration: const Duration(milliseconds: 500),
+              child: Icon(
+                Icons.check_circle,
+                color: Constants.secondaryColor,
+                size: 250,
               ),
             ),
-            DefaultText(text: data['message'], size: 18.0),
-            // DefaultText(
-            //     text: data['drug_prescribed'][0], size: 18.0),
+            const SizedBox(height: 20.0),
+            DefaultText(
+              text: data['message'],
+              size: 18.0,
+              color: Constants.secondaryColor,
+            ),
             const Spacer(),
-
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: TextButton(
@@ -86,7 +86,9 @@ class PaymentSuccessful extends StatelessWidget {
                   );
 
                   final pdfFile = await PdfInvoiceApi.generate(
-                      invoice, controller.prescription_id.value, controller.drugInvoice[0].prescription!.patient!.name);
+                      invoice,
+                      controller.prescription_id.value,
+                      controller.drugInvoice[0].prescription!.patient!.name);
                   PdfApi.openFile(pdfFile);
                   // print("generated");
                   Constants.dialogBox(context,
@@ -96,7 +98,7 @@ class PaymentSuccessful extends StatelessWidget {
                       actions: [
                         TextButton(
                             onPressed: () {
-                              Get.close(2);
+                              Get.close(3);
                             },
                             child: const DefaultText(
                               text: "okay",
@@ -111,7 +113,6 @@ class PaymentSuccessful extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20.0),
-
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: ElevatedButton(

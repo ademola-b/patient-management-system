@@ -64,6 +64,7 @@ class Report extends StatelessWidget {
                   )
                 ],
               ),
+              const SizedBox(height: 20.0),
               Form(
                   key: _form,
                   child: Column(
@@ -93,7 +94,7 @@ class Report extends StatelessWidget {
                         onSaved: (value) => _to = value!,
                         validator: Constants.validator,
                       ),
-                      const SizedBox(height: 20.0),
+                      const SizedBox(height: 40.0),
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Obx(() => DefaultButton(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:pms/screens/add_patient.dart';
+import 'package:pms/screens/dashboard.dart';
+import 'package:pms/screens/login.dart';
 import 'package:pms/screens/medicine.dart';
 import 'package:pms/screens/navbar.dart';
 import 'package:pms/screens/patient_details.dart';
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
+        GetPage(name: '/login', page: () => Login()),
+        GetPage(name: '/dashboard', page: () => Dashboard()),
         GetPage(name: '/navbar', page: () => Navbar()),
         GetPage(name: '/patients', page: () => const Patients()),
         GetPage(name: '/add_patient', page: () => AddPatient()),

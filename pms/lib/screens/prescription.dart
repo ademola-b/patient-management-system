@@ -79,7 +79,7 @@ class Prescription extends StatelessWidget {
                                 borderSide: BorderSide(color: Colors.white))),
                         onChanged: (PatientListResponse? value) {
                           controller.patient!.value = value!.patientId!;
-                          print(value.patientId);
+                          // print(value.patientId);
                         },
                         validator: Constants.patientValidator,
                       ),
@@ -173,111 +173,157 @@ class Prescription extends StatelessWidget {
                       ),
                       const SizedBox(height: 20.0),
                       Obx(() => Expanded(
-                            child: Table(
-                              border: TableBorder.all(),
+                            flex: 3,
+                            child: ListView(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              physics: const AlwaysScrollableScrollPhysics(),
                               children: [
-                                const TableRow(
-                                    decoration: BoxDecoration(
-                                        color: Constants.secondaryColor),
-                                    children: [
-                                      TableCell(
-                                        child: DefaultText(
-                                          text: "Name",
-                                          size: 18.0,
-                                          color: Constants.altColor,
-                                          align: TextAlign.center,
-                                        ),
+                                Table(
+                                  border: TableBorder.all(),
+                                  children: [
+                                    const TableRow(
+                                        decoration: BoxDecoration(
+                                            color: Constants.secondaryColor),
+                                        children: [
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: DefaultText(
+                                              text: "Name",
+                                              size: 18.0,
+                                              color: Constants.altColor,
+                                              align: TextAlign.center,
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: DefaultText(
+                                              text: "QTY",
+                                              size: 18.0,
+                                              color: Constants.altColor,
+                                              align: TextAlign.center,
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: DefaultText(
+                                              align: TextAlign.center,
+                                              text: "Price",
+                                              size: 18.0,
+                                              color: Constants.altColor,
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: DefaultText(
+                                              text: "Total",
+                                              size: 18.0,
+                                              color: Constants.altColor,
+                                              align: TextAlign.center,
+                                            ),
+                                          ),
+                                          TableCell(
+                                            verticalAlignment:
+                                                TableCellVerticalAlignment
+                                                    .middle,
+                                            child: DefaultText(
+                                              text: "Action",
+                                              size: 18.0,
+                                              color: Constants.altColor,
+                                              align: TextAlign.center,
+                                            ),
+                                          ),
+                                        ]),
+                                    for (var index = 0;
+                                        index < controller.drugList.length;
+                                        index++)
+                                      TableRow(
+                                        children: [
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .top,
+                                              child: DefaultText(
+                                                  align: TextAlign.center,
+                                                  text: controller
+                                                      .drugList[index].name)),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: DefaultText(
+                                                  align: TextAlign.center,
+                                                  text: controller
+                                                      .drugList[index].qty)),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: DefaultText(
+                                                  align: TextAlign.center,
+                                                  text: controller
+                                                      .drugList[index].price
+                                                      .toString())),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: DefaultText(
+                                                  align: TextAlign.center,
+                                                  text: controller
+                                                      .drugList[index].total
+                                                      .toString())),
+                                          TableCell(
+                                              verticalAlignment:
+                                                  TableCellVerticalAlignment
+                                                      .middle,
+                                              child: IconButton(
+                                                  onPressed: () {
+                                                    removeDrug(
+                                                        index,
+                                                        controller
+                                                            .drugList[index],
+                                                        controller
+                                                            .drugList[index]
+                                                            .drugId);
+                                                    // print(controller.drugList);
+                                                    // print(
+                                                    //     controller.drugPrescribed);
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ))),
+                                        ],
                                       ),
-                                      TableCell(
-                                        child: DefaultText(
-                                          text: "QTY",
-                                          size: 18.0,
-                                          color: Constants.altColor,
-                                          align: TextAlign.center,
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: DefaultText(
-                                          text: "Price",
-                                          size: 18.0,
-                                          color: Constants.altColor,
-                                          align: TextAlign.center,
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: DefaultText(
-                                          text: "Total",
-                                          size: 18.0,
-                                          color: Constants.altColor,
-                                          align: TextAlign.center,
-                                        ),
-                                      ),
-                                      TableCell(
-                                        child: DefaultText(
-                                          text: "Action",
-                                          size: 18.0,
-                                          color: Constants.altColor,
-                                          align: TextAlign.center,
-                                        ),
-                                      ),
-                                    ]),
-                                for (var index = 0;
-                                    index < controller.drugList.length;
-                                    index++)
-                                  TableRow(
-                                    children: [
-                                      TableCell(
-                                          child: DefaultText(
-                                              text: controller
-                                                  .drugList[index].name)),
-                                      TableCell(
-                                          child: DefaultText(
-                                              text: controller
-                                                  .drugList[index].qty)),
-                                      TableCell(
-                                          child: DefaultText(
-                                              text: controller
-                                                  .drugList[index].price
-                                                  .toString())),
-                                      TableCell(
-                                          child: DefaultText(
-                                              text: controller
-                                                  .drugList[index].total
-                                                  .toString())),
-                                      TableCell(
-                                          child: IconButton(
-                                              onPressed: () {
-                                                removeDrug(
-                                                    index,
-                                                    controller.drugList[index],
-                                                    controller.drugList[index]
-                                                        .drugId);
-                                                // print(controller.drugList);
-                                                // print(
-                                                //     controller.drugPrescribed);
-                                              },
-                                              icon: const Icon(
-                                                Icons.delete,
-                                                color: Colors.red,
-                                              ))),
-                                    ],
-                                  ),
+                                  ],
+                                ),
                               ],
                             ),
                           )),
                       const Spacer(),
-                      Expanded(
-                        child: SizedBox(
-                          width: size.width,
-                          child: Obx(() => DefaultButton(
-                                onPressed: () {
-                                  controller.isClicked.value = true;
-                                  controller.makePayment(context);
-                                },
-                                textSize: 18,
-                                child: controller.cir(),
-                              )),
-                        ),
+                      SizedBox(
+                        width: size.width,
+                        child: Obx(() => DefaultButton(
+                              onPressed: () {
+                                var isValid = _form.currentState!.validate();
+                                if (!isValid) return;
+
+                                _form.currentState!.save();
+                                controller.isClicked.value = true;
+                                controller.makePayment(context);
+                              },
+                              textSize: 18,
+                              child: controller.cir(),
+                            )),
                       )
                     ],
                   ),

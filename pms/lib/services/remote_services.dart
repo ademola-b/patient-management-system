@@ -30,18 +30,7 @@ class RemoteServices {
         if (responseData['key'] != null) {
           sharedPreferences.setString('token', responseData['key']);
           // UserDetailsResponse? userDetail = await RemoteServices.userDetails();
-          Get.offAllNamed('/navbar');
-          // if (userDetail != null) {
-          //   if (userDetail.isLandlord) {
-          //     sharedPreferences.setBool("is_landlord", true);
-          //   } else {
-          //     sharedPreferences.setBool("is_landlord", false);
-          //     Get.offAllNamed('/scouterNavBar');
-          //   }
-          // } else {
-          //   Get.showSnackbar(Constants.customSnackBar(
-          //       message: "User not found", tag: false));
-          // }
+          Get.offAllNamed('/dashboard');
         } else if (responseData['non_field_errors'] != null) {
           // RemoteServices.controller.isClicked.value = false;
           Get.showSnackbar(Constants.customSnackBar(
@@ -109,7 +98,7 @@ class RemoteServices {
             ),
             actions: [
               TextButton(
-                  onPressed: () => Get.close(0),
+                  onPressed: () => Get.close(1),
                   child: const DefaultText(
                     text: "Okay",
                     size: 18.0,
