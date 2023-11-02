@@ -59,7 +59,7 @@ class PrescriptionController extends GetxController {
     Charge charge = Charge()
       ..amount = calculateTotal(drugList).toInt() * 100
       ..reference = 'ref_${DateTime.now()}'
-      ..email = 'bellofaisol@gmail.com'
+      ..email = 'ademolabello519@gmail.com'
       // ..accessCode = '+234'
       ..currency = 'NGN';
 

@@ -91,7 +91,7 @@ class PrescribedDrugs extends StatelessWidget {
                                     onPressed: () async {
                                       final invoice = Invoice(
                                         info: InvoiceInfo(
-                                            date: controller.prescribedDrug![0]
+                                            date: controller.prescribedDrug[0]
                                                 .prescription!.date,
                                             description: "Drug Prescription",
                                             number: "ref_2023"),
@@ -99,9 +99,9 @@ class PrescribedDrugs extends StatelessWidget {
                                             name:
                                                 "${controller.prescribedDrug[0].prescription!.patient!.name}",
                                             address:
-                                                "${controller.prescribedDrug![0].prescription!.patient!.address}"),
+                                                "${controller.prescribedDrug[0].prescription!.patient!.address}"),
                                         items: controller.prescribedDrug,
-                                        diagnosis: controller.prescribedDrug![0]
+                                        diagnosis: controller.prescribedDrug[0]
                                             .prescription!.diagnosis,
                                       );
 
