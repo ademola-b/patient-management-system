@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
 import 'package:pms/utils/defaultButton.dart';
@@ -180,33 +181,54 @@ class Constants {
 
   static Widget circ(Rx<bool> isClicked, String action) {
     if (isClicked.value) {
-      print(isClicked);
       return const CircularProgressIndicator(
         color: Constants.altColor,
       );
     } else {
-      print(isClicked);
-
       return DefaultText(text: action, color: Colors.white, size: 18.0);
     }
   }
 
-  static Future<String> getDownloadPath() async {
-    Directory? dir;
+  static getPath() async {
+    // Directory? dir;
     // get the download folder
     try {
-      Platform.isIOS
-          ? dir = await getApplicationDocumentsDirectory()
-          : dir = Directory('/storage/emulated/0/Download');
-      // check external storage if download is not gotten
-      if (!await dir.exists()) dir = await getExternalStorageDirectory();
+      if (await Permission.manageExternalStorage.isGranted) {
+        final path = Directory('/storage/emulated/0/pmsInvoice/');
+        String res = '';
+        if (await path.exists()) {
+          res = path.path;
+        } else {
+          final Directory dirNewFolder = await path.create(recursive: true);
+          res = dirNewFolder.path;
+        }
+        print("res-$res");
+        return res;
+      } else {
+        await Permission.manageExternalStorage.request();
+      }
     } catch (err) {
       Get.showSnackbar(Constants.customSnackBar(
-          message:
-              "Can't get download folder, check if storage permission is enabled",
-          tag: false));
+          message: "Can't get folder, $err", tag: false));
     }
-
-    return dir!.path;
   }
+  // static Future<String> getPath() async {
+  //   Directory? dir;
+  //   // get the download folder
+  //   try {
+  //     Platform.isIOS
+  //         ? dir = await getApplicationDocumentsDirectory()
+  //         : dir = await getExternalStorageDirectory();
+  //         // : dir = Directory('/storage/emulated/0/Download');
+  //     // check external storage if download is not gotten
+  //     if (!await dir!.exists()) dir = await getExternalStorageDirectory();
+  //   } catch (err) {
+  //     Get.showSnackbar(Constants.customSnackBar(
+  //         message:
+  //             "Can't get download folder, check if storage permission is enabled",
+  //         tag: false));
+  //   }
+
+  //   return dir!.path;
+  // }
 }

@@ -1,4 +1,5 @@
-String baseUrl = 'http://192.168.2.103:8000';
+// String baseUrl = 'http://192.168.2.103:8000';
+String baseUrl = 'http://bfa.pythonanywhere.com';
 
 Uri loginUrl = Uri.parse("$baseUrl/api/accounts/login/");
 Uri userUrl = Uri.parse("$baseUrl/api/accounts/user/");

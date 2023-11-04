@@ -5,7 +5,6 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart';
 import 'package:pms/models/invoice.dart';
 import 'package:pms/models/patient_list_response.dart';
-import 'package:pms/models/prescription_create_response.dart';
 import 'package:pms/services/urls.dart';
 import 'package:pms/utils/constants.dart';
 import 'package:pms/utils/pdf_api.dart';
