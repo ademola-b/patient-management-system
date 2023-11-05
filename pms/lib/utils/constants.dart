@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pms/models/medicine_response.dart';
 import 'package:pms/models/patient_list_response.dart';
+import 'package:pms/services/remote_services.dart';
 import 'package:pms/utils/defaultButton.dart';
 import 'package:pms/utils/defaultText.dart';
 import 'package:pms/utils/defaultTextFormField.dart';
@@ -97,18 +98,20 @@ class Constants {
             ));
   }
 
-  static void showDrugDetails(
-      Size size, String nameText, String priceText, BuildContext context) {
+  static void showDrugDetails(Size size, String medicineId, String nameText,
+      String priceText, BuildContext context) {
     final _form = GlobalKey<FormState>();
     late String _name, _price;
 
     TextEditingController name = TextEditingController(text: nameText);
     TextEditingController price = TextEditingController(text: priceText);
 
-    updateDrug() {
+    updateDrug(String id) async {
       var isValid = _form.currentState!.validate();
       if (!isValid) return;
       _form.currentState!.save();
+
+      await RemoteServices.medicineUpdate(id, name: _name, price: _price);
 
       print("Data collected: $_name, $_price");
     }
@@ -116,22 +119,19 @@ class Constants {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (builder) {
-        return Container(
-          height: size.height / 2.5,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(100.0),
-              topRight: Radius.circular(100.0),
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Form(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))),
+      builder: (context) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Form(
                   key: _form,
                   child: Column(
                     children: [
@@ -160,7 +160,7 @@ class Constants {
                         child: DefaultButton(
                             onPressed: () {
                               // controller.isClicked.value = true;
-                              updateDrug();
+                              updateDrug(medicineId);
                             },
                             textSize: 18,
                             child: const DefaultText(
@@ -171,8 +171,8 @@ class Constants {
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -189,46 +189,55 @@ class Constants {
     }
   }
 
-  static getPath() async {
-    // Directory? dir;
+  // static getPath() async {
+  //   // Directory? dir;
+  //   // get the download folder
+  //   try {
+  //     if (await Permission.manageExternalStorage.isGranted) {
+  //       final path = await getExternalStorageDirectory();
+  //       // final path = Directory('/storage/emulated/0/pmsInvoice/');
+  //       String directory = '';
+  //       if (await path!.exists()) {
+  //         directory = path.path;
+  //         print("re: $directory");
+  //       } else {
+  //         final Directory dirNewFolder = await path.create(recursive: true);
+  //         directory = dirNewFolder.path;
+  //         print("re3: $directory");
+  //       }
+  //       // if (!await path.exists()) directory = await getExternalStorageDirectory();
+  //       print("directory-$directory");
+  //       return directory;
+  //     } else {
+  //       await Permission.manageExternalStorage.request();
+  //     }
+  //   } catch (err) {
+  //     Get.showSnackbar(Constants.customSnackBar(
+  //         message: "Can't get folder, $err", tag: false));
+  //   }
+  // }
+
+  static Future<String> getPath() async {
+    Directory? dir;
     // get the download folder
     try {
       if (await Permission.manageExternalStorage.isGranted) {
-        final path = Directory('/storage/emulated/0/pmsInvoice/');
-        String res = '';
-        if (await path.exists()) {
-          res = path.path;
-        } else {
-          final Directory dirNewFolder = await path.create(recursive: true);
-          res = dirNewFolder.path;
-        }
-        print("res-$res");
-        return res;
+        Platform.isIOS
+            ? dir = await getApplicationDocumentsDirectory()
+            : dir = Directory('/storage/emulated/0/Download');
+        // check external storage if download is not gotten
+        if (!await dir.exists()) dir = await getExternalStorageDirectory();
       } else {
         await Permission.manageExternalStorage.request();
       }
     } catch (err) {
       Get.showSnackbar(Constants.customSnackBar(
-          message: "Can't get folder, $err", tag: false));
+          message:
+              "Can't get download folder, check if storage permission is enabled",
+          tag: false));
     }
-  }
-  // static Future<String> getPath() async {
-  //   Directory? dir;
-  //   // get the download folder
-  //   try {
-  //     Platform.isIOS
-  //         ? dir = await getApplicationDocumentsDirectory()
-  //         : dir = await getExternalStorageDirectory();
-  //         // : dir = Directory('/storage/emulated/0/Download');
-  //     // check external storage if download is not gotten
-  //     if (!await dir!.exists()) dir = await getExternalStorageDirectory();
-  //   } catch (err) {
-  //     Get.showSnackbar(Constants.customSnackBar(
-  //         message:
-  //             "Can't get download folder, check if storage permission is enabled",
-  //         tag: false));
-  //   }
 
-  //   return dir!.path;
-  // }
+    print("dir: ${dir!.path}");
+    return dir!.path;
+  }
 }

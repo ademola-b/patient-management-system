@@ -98,7 +98,7 @@ class RemoteServices {
             ),
             actions: [
               TextButton(
-                  onPressed: () => Get.close(1),
+                  onPressed: () => Get.close(2),
                   child: const DefaultText(
                     text: "Okay",
                     size: 18.0,
@@ -175,6 +175,29 @@ class RemoteServices {
       });
       if (response.statusCode == 200) {
         return medicineResponseFromJson(response.body);
+      }
+    } catch (e) {
+      Get.showSnackbar(
+          Constants.customSnackBar(message: "Server Error: $e", tag: false));
+    }
+  }
+
+  static Future<MedicineResponse?> medicineUpdate(String id,
+      {String? name, String? price}) async {
+    try {
+      http.Response response = await http.put(medicineDetailUrl(id), body: {
+        'name': name,
+        'price': price
+      }, headers: {
+        'Authorization': "Token ${sharedPreferences.getString('token')}"
+      });
+      if (response.statusCode == 200) {
+        Get.showSnackbar(
+            Constants.customSnackBar(message: "Medicine Updated", tag: true));
+        Get.close(2);
+        return medicineResponseFromJson(response.body);
+      } else {
+        print(response.body);
       }
     } catch (e) {
       Get.showSnackbar(

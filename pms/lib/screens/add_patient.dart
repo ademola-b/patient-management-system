@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +37,6 @@ class AddPatient extends StatelessWidget {
     }
 
     _form.currentState!.save();
-    print("data collected: $_name, $_address, $_dob, $_phone, $_gender");
     await RemoteServices.addPatient(
         _name, _address, _phone, _gender, _dob, controller.img.value);
     controller.isClicked.value = false;
@@ -43,6 +44,7 @@ class AddPatient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Constants.backgroundColor,
@@ -72,22 +74,43 @@ class AddPatient extends StatelessWidget {
                 const DefaultText(
                     text: "Fill below form to add a patient", size: 18.0),
                 const SizedBox(height: 30),
-                Obx(() => controller.img.value != null
-                    ? Image.asset("assets/images/default.jpg",
-                        width: 120, height: 120)
-                    : Image.file(controller.img.value,
-                        width: 150, height: 150)),
-                GestureDetector(
-                  onTap: () {
-                    controller.getImage(ImageSource.gallery);
-                    // Navigator.pop(context);
-                  },
-                  child: Column(
-                    children: const [
-                      Icon(Icons.image_outlined, size: 30.0),
-                    ],
-                  ),
-                ),
+                Obx(() => Stack(children: [
+                      ClipOval(
+                        child: controller.img.value.existsSync()
+                            ? Image.file(
+                                controller.img.value,
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/images/default.jpg",
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            controller.getImage(ImageSource.gallery);
+                            // Navigator.pop(context);
+                          },
+                          child: Column(
+                            children: const [
+                              Icon(
+                                Icons.image_outlined,
+                                size: 30.0,
+                                color: Constants.secondaryColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ])),
+                const SizedBox(height: 10.0),
                 Form(
                     key: _form,
                     child: Column(

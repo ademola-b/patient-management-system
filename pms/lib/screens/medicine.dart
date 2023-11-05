@@ -66,19 +66,23 @@ class Medicine extends StatelessWidget {
                       onPressed: () {
                         showModalBottomSheet(
                             context: context,
-                            builder: (builder) {
-                              return Container(
-                                height: size.height / 2.5,
-                                decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(100.0),
-                                        topRight: Radius.circular(100.0))),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20.0, horizontal: 10.0),
-                                  child: Column(
-                                    children: [
-                                      Form(
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20.0),
+                                    topRight: Radius.circular(20.0))),
+                            builder: (context) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Form(
                                         key: _form,
                                         child: Column(
                                           children: [
@@ -117,8 +121,8 @@ class Medicine extends StatelessWidget {
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               );
                             });
@@ -148,6 +152,7 @@ class Medicine extends StatelessWidget {
                                 onTap: () {
                                   Constants.showDrugDetails(
                                       size,
+                                      "${data[index].medicineId}",
                                       "${data[index].name}",
                                       "${data[index].price}",
                                       context);

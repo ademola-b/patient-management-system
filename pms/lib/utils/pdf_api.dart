@@ -13,6 +13,7 @@ class PdfApi {
 
     // final dir = await getApplicationDocumentsDirectory();
     final dir = await Constants.getPath();
+    print("dir: $dir");
     final file = File('$dir/$name');
 
     await file.writeAsBytes(bytes);

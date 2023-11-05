@@ -11,7 +11,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-
 class PatientController extends GetxController {
   var isClicked = false.obs;
   var isEnabled = false.obs;
@@ -24,7 +23,7 @@ class PatientController extends GetxController {
   Rx<TextEditingController> dob = TextEditingController().obs;
   Rx<TextEditingController> phone = TextEditingController().obs;
   Rx<TextEditingController> gender = TextEditingController().obs;
-var img = File('').obs;
+  var img = File('').obs;
 
   var data = Get.arguments;
 
@@ -101,6 +100,7 @@ var img = File('').obs;
     final name = Path.basename(imagePath);
     final image = File("${directory.path}/$name");
 
+    print(image);
     return File(imagePath).copy(image.path);
   }
 }
